@@ -1,0 +1,35 @@
+---
+- name: Bootstrap system
+  hosts: localhost
+  tasks:
+    - name: Install Linuxbrew
+      block:
+        - name: Download install script
+          get_url:
+            url: https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+            dest: /tmp/brew_install.sh
+            mode: '0755'
+        - name: Run install script
+          shell: /tmp/brew_install.sh
+          args:
+            creates: /home/linuxbrew/.linuxbrew
+
+    - name: Install apt packages
+      become: true
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: []
+
+    - name: Install snap packages
+      become: true
+      community.general.snap:
+        name: "{{ item }}"
+        state: present
+      loop: []
+
+    - name: Install brew packages
+      community.general.homebrew:
+        name: "{{ item }}"
+        state: present
+      loop: []
