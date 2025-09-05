@@ -1,35 +1,85 @@
 ---
 - name: Bootstrap system
-  hosts: localhost
+  hosts: all
   tasks:
     - name: Install Linuxbrew
-      block:
-        - name: Download install script
-          get_url:
-            url: https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-            dest: /tmp/brew_install.sh
-            mode: '0755'
-        - name: Run install script
-          shell: /tmp/brew_install.sh
-          args:
-            creates: /home/linuxbrew/.linuxbrew
+      shell: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -c
+      args:
+        creates: /home/linuxbrew/.linuxbrew
 
     - name: Install apt packages
       become: true
-      apt:
-        name: "{{ item }}"
+      ansible.builtin.apt:
+        name:
+          - zsh
         state: present
-      loop: []
+
+    - name: Install Zinit
+      ansible.builtin.shell: curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh | bash -c
+      args:
+        creates: "{{ ansible_env.HOME }}/.local/share/zinit/zinit.git"
+
+    - name: Configure Zinit
+      ansible.builtin.blockinfile:
+        path: /etc/network/interfaces
+        block: |
+          ZSH_THEME="bureau"
+          zinit snippet OMZL::git.zsh
+          zinit snippet OMZP::git
+          zinit cdclear -q
+          zinit snippet OMZP::golang
+          zinit snippet OMZP::helm
+          zinit snippet OMZP::k9s
+          zinit snippet OMZP::kubectl
+          zinit snippet OMZP::kubectx
+          zinit snippet OMZP::node
+          zinit snippet OMZP::npm
+          zinit snippet OMZP::ssh
+          zinit snippet OMZP::vscode
+          zinit snippet OMZP::yarn
+          zinit snippet OMZL::clipboard.zsh
+          zinit snippet OMZL::nvm.zsh
+          zinit snippet OMZT::$ZSH_THEME
 
     - name: Install snap packages
       become: true
       community.general.snap:
-        name: "{{ item }}"
+        name:
+          - discord
+          - ghostty
+          - spotify
+          - steam
         state: present
-      loop: []
 
     - name: Install brew packages
       community.general.homebrew:
-        name: "{{ item }}"
+        name:
+          - charmbracelet/tap/crush
+          - dagger/tap/dagger
+          - dagger/tap/container-use
+          - frantjc/tap/forge
+          - frantjc/tap/rvglsm
+          - gh
+          - go
+          - golangci-lint
+          - goreleaser
+          - k9s
+          - kind
+          - kuberctx
+          - kubernetes-cli
+          - node
+          # TODO(frantjc): spotdl in ~/.local/bin
+          - pipx
+          - upx
+          - yq
         state: present
-      loop: []
+
+    - name: Install flatpak packages
+      community.general.flatpak:
+        method: user
+        name:
+          - at.vintagestory.VintageStory
+          - chat.revolt.RevoltDesktop
+          - com.github.iwalton3.jellyfin-media-player
+          - https://mickael9.github.io/rvgl-flatpak/rvgl.flatpakref
+        state: present
