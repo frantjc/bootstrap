@@ -1,6 +1,8 @@
 ---
 - name: Bootstrap system
   hosts: all
+  roles:
+    - zinit
   tasks:
     - name: Install Linuxbrew
       shell: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -c
@@ -13,33 +15,6 @@
         name:
           - zsh
         state: present
-
-    - name: Install Zinit
-      ansible.builtin.shell: curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh | bash -c
-      args:
-        creates: "{{ ansible_env.HOME }}/.local/share/zinit/zinit.git"
-
-    - name: Configure Zinit
-      ansible.builtin.blockinfile:
-        path: "{{ ansible_env.HOME }}/.zshrc"
-        block: |
-          ZSH_THEME="bureau"
-          zinit snippet OMZL::git.zsh
-          zinit snippet OMZP::git
-          zinit cdclear -q
-          zinit snippet OMZP::golang
-          zinit snippet OMZP::helm
-          zinit snippet OMZP::k9s
-          zinit snippet OMZP::kubectl
-          zinit snippet OMZP::kubectx
-          zinit snippet OMZP::node
-          zinit snippet OMZP::npm
-          zinit snippet OMZP::ssh
-          zinit snippet OMZP::vscode
-          zinit snippet OMZP::yarn
-          zinit snippet OMZL::clipboard.zsh
-          zinit snippet OMZL::nvm.zsh
-          zinit snippet OMZT::$ZSH_THEME
 
     - name: Install snap packages
       become: true
