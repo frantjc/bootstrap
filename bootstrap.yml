@@ -21,7 +21,7 @@
 
     - name: Configure Zinit
       ansible.builtin.blockinfile:
-        path: /etc/network/interfaces
+        path: "{{ ansible_env.HOME }}/.zshrc"
         block: |
           ZSH_THEME="bureau"
           zinit snippet OMZL::git.zsh
