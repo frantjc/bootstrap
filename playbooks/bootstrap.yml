@@ -1,0 +1,38 @@
+---
+- name: Bootstrap system
+  hosts: all
+  tasks:
+    - name: Install nerdctl
+      ansible.builtin.include_role:
+        name: nerdctl
+
+    - name: Install Linuxbrew
+      ansible.builtin.include_role:
+        name: linuxbrew
+
+    - name: Install Zinit
+      ansible.builtin.include_role:
+        name: zinit
+
+    - name: Install snap packages
+      become: true
+      community.general.snap:
+        name:
+          - discord
+          - ghostty
+          - spotify
+          - steam
+
+    - name: Install flatpak packages
+      community.general.flatpak:
+        method: user
+        name:
+          - at.vintagestory.VintageStory
+          - chat.revolt.RevoltDesktop
+          - com.github.iwalton3.jellyfin-media-player
+          - https://mickael9.github.io/rvgl-flatpak/rvgl.flatpakref
+        state: present
+
+    - name: Install Odamex
+      ansible.builtin.include_role:
+        name: odamex

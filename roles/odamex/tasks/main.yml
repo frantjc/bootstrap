@@ -1,0 +1,79 @@
+---
+- name: Stat
+  ansible.builtin.stat:
+    path: /usr/local/bin/odamex
+  register: stat
+
+- name: Install
+  when: not stat.stat.exists
+  block:
+    - name: Install apt packages
+      become: true
+      ansible.builtin.apt:
+        name: &deps
+          - build-essential
+          - cmake
+          - deutex
+          - libcurl4-gnutls-dev
+          - libasound2-dev
+          - libegl1-mesa-dev
+          - libcairo2-dev
+          - libgl1-mesa-dev
+          - libglu1-mesa-dev
+          - libjsoncpp-dev
+          - libpango1.0-dev
+          - libpng-dev
+          - libportmidi-dev
+          - libsdl2-dev
+          - libsdl2-mixer-dev
+          - libwayland-dev
+          - libx11-dev
+          - libxft-dev
+          - libzstd-dev
+          - zlib1g-dev
+
+    - name: Tmp checkout dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: checkout
+
+    - name: Clone
+      ansible.builtin.git:
+        repo: https://github.com/odamex/odamex.git
+        dest: "{{ checkout.path }}"
+        version: stable
+
+    - name: Tmp build dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: build
+
+    - name: Cmake
+      become: true
+      ansible.builtin.shell:
+        chdir: "{{ build.path }}"
+        cmd: >-
+          cmake {{ checkout.path }} \
+            -DBUILD_SERVER=0 \
+            -DBUILD_CLIENT=1 \
+            -DBUILD_LAUNCHER=0 \
+            -DBUILD_MASTER=0 \
+            -DBUILD_OR_FAIL=1 \
+            -DCMAKE_BUILD_TYPE=MinSizeRel \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_C_FLAGS="-O2 -w" \
+            -DCMAKE_CXX_COMPILER=g++ \
+            -DCMAKE_CXX_FLAGS="-O2 -w"
+
+    - name: Make
+      become: true
+      ansible.builtin.shell:
+        chdir: "{{ build.path }}"
+        cmd: make -j$(nproc) odamex install
+        creates: /usr/local/bin/odamex
+
+    - name: Remove apt packages
+      become: true
+      ansible.builtin.apt:
+        name: *deps
+        state: absent

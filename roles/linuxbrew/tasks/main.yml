@@ -1,0 +1,31 @@
+---
+- name: Install
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+    creates: /home/linuxbrew/.linuxbrew
+
+- name: Install formulas
+  community.general.homebrew:
+    name:
+      - charmbracelet/tap/crush
+      - dagger/tap/dagger
+      - gh
+      - go
+      - golangci-lint
+      - goreleaser
+      - k9s
+      - kind
+      - kubectx
+      - kubernetes-cli
+      - node
+      # TODO(frantjc): spotdl in ~/.local/bin
+      - pipx
+      - upx
+      - yq
+
+- name: Install casks
+  community.general.homebrew_cask:
+    name:
+      - dagger/tap/container-use
+      - frantjc/tap/forge
+      - frantjc/tap/rvglsm
