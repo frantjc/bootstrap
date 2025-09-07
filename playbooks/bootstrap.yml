@@ -2,6 +2,18 @@
 - name: Bootstrap system
   hosts: all
   tasks:
+    - name: Install zed
+      ansible.builtin.include_role:
+        name: zed
+
+    - name: Install openrct2
+      ansible.builtin.include_role:
+        name: openrct2
+
+    - name: Install curseforge
+      ansible.builtin.include_role:
+        name: curseforge
+
     - name: Install nerdctl
       ansible.builtin.include_role:
         name: nerdctl

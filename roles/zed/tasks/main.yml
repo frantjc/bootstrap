@@ -1,0 +1,5 @@
+---
+- name: Install
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://zed.dev/install.sh | bash
+    creates: "{{ ansible_env.HOME }}/.local/zed.app"

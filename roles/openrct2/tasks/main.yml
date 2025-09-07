@@ -1,0 +1,11 @@
+---
+- name: Add apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: ppa:openrct2/master
+
+- name: Install apt packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - openrct2
