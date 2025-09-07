@@ -1,4 +1,5 @@
 ---
 - name: Install
+  become: true
   ansible.builtin.apt:
     deb: https://curseforge.overwolf.com/downloads/curseforge-latest-linux.deb

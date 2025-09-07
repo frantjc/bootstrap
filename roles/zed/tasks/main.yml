@@ -3,3 +3,9 @@
   ansible.builtin.shell:
     cmd: curl -fsSL https://zed.dev/install.sh | bash
     creates: "{{ ansible_env.HOME }}/.local/zed.app"
+
+- name: Symlink code
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/.local/bin/zed"
+    dest: "{{ ansible_env.HOME }}/.local/bin/code"
+    state: link
