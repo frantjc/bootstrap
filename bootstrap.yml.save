@@ -5,7 +5,6 @@
     - name: Install vscode
       ansible.builtin.include_role:
         name: vscode
-
     - name: Install openrct2
       ansible.builtin.include_role:
         name: openrct2
@@ -48,3 +47,4 @@
     - name: Install Odamex
       ansible.builtin.include_role:
         name: odamex
+
