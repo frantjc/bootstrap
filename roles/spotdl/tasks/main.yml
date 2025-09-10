@@ -1,0 +1,24 @@
+---
+- name: Install pipx
+  community.general.homebrew:
+    name:
+      - pipx
+
+- name: Install
+  ansible.builtin.shell:
+    cmd: pipx install spotdl
+    creates: "{{ ansible_env.HOME }}/.local/bin/spotdl"
+
+- name: Config location
+  vars:
+    xdg_data_home: "{{ lookup('ansible.builtin.env', 'XDG_DATA_HOME', default='{{ ansible_env.HOME }}/.local/share') }}"
+  ansible.builtin.shell:
+    cmd: "mkdir -p {{ xdg_data_home }}/spotdl"
+    creates: "{{ xdg_data_home }}/spotdl"
+
+- name: Configure
+  vars:
+    xdg_data_home: "{{ lookup('ansible.builtin.env', 'XDG_DATA_HOME', default='{{ ansible_env.HOME }}/.local/share') }}"
+  ansible.builtin.shell:
+    cmd: "spotdl --generate-config"
+    creates: "{{ xdg_data_home }}/spotdl/config.json"

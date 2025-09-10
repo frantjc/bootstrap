@@ -13,6 +13,9 @@
 - name: Configure Zinit
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR ZINIT"
+    prepend_newline: true
+    append_newline: true
     block: |
       ZSH_THEME="bureau"
       zinit snippet OMZL::git.zsh

@@ -14,9 +14,9 @@
       ansible.builtin.include_role:
         name: curseforge
 
-    - name: Install nerdctl
-      ansible.builtin.include_role:
-        name: nerdctl
+    # - name: Install nerdctl
+    #   ansible.builtin.include_role:
+    #     name: nerdctl
 
     - name: Install Linuxbrew
       ansible.builtin.include_role:
@@ -25,6 +25,18 @@
     - name: Install Zinit
       ansible.builtin.include_role:
         name: zinit
+
+    - name: Configure aliases
+      ansible.builtin.include_role:
+        name: aliases
+
+    - name: Configure xdg
+      ansible.builtin.include_role:
+        name: xdg
+
+    - name: Install spotdl
+      ansible.builtin.include_role:
+        name: spotdl
 
     - name: Install snap packages
       become: true

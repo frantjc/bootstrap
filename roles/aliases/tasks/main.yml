@@ -1,0 +1,42 @@
+---
+- name: Install fzf
+  community.general.homebrew:
+    name:
+      - fzf
+
+- name: Configure kubeconfig
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR KUBECONFIG"
+    prepend_newline: true
+    append_newline: true
+    block: |
+      prev_kubeconfig="{{ ansible_env.HOME }}/.kube/.prev"
+
+      default_kubeconfig="{{ ansible_env.HOME }}/.kube/config"
+
+      if [ ! -f "$prev_kubeconfig" ]; then
+          echo "$default_kubeconfig" > "$prev_kubeconfig"
+      fi
+
+      export KUBECONFIG="$(cat "$prev_kubeconfig")"
+
+      kubeconfigd="{{ ansible_env.HOME }}/.kube/config.d"
+
+      mkdir -p "$kubeconfigd"
+
+      kubeconfig () {
+          current_kubeconfig="${KUBECONFIG:-"$default_kubeconfig"}"
+          if [[ "$1" == "-" ]]; then
+            export KUBECONFIG="$(cat "$prev_kubeconfig")"
+            echo "$current_kubeconfig" > "$prev_kubeconfig"
+          elif [[ $(find "$kubeconfigd" -type f | wc -l) -gt 0 ]]; then
+            export KUBECONFIG="$(find "$kubeconfigd" -type f | fzf)"
+            echo "$current_kubeconfig" > "$prev_kubeconfig"
+          else
+            echo "no files found in ${kubeconfigd}"
+          fi
+      }
+
+      alias kubecfg="kubeconfig"
+      alias kcfg="kubecfg"
