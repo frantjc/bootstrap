@@ -2,7 +2,7 @@
 - name: Install
   ansible.builtin.shell:
     cmd: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
-    creates: /home/linuxbrew/.linuxbrew
+    creates: "{% if ansible_facts['os_family'] == 'Darwin' %}/opt/homebrew{% else %}/home/linuxbrew/.linuxbrew{% endif %}"
 
 - name: Install formulas
   community.general.homebrew:

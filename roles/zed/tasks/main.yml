@@ -3,9 +3,18 @@
   ansible.builtin.shell:
     cmd: curl -fsSL https://zed.dev/install.sh | bash
     creates: "{{ ansible_env.HOME }}/.local/zed.app"
+  when: ansible_facts['os_family'] != "Darwin"
 
 - name: Symlink code
   ansible.builtin.file:
     src: "{{ ansible_env.HOME }}/.local/bin/zed"
     dest: "{{ ansible_env.HOME }}/.local/bin/code"
     state: link
+  when: ansible_facts['os_family'] != "Darwin"
+
+- name: Install
+  community.general.homebrew_cask:
+    name:
+      - zed
+  when: ansible_facts['os_family'] == "Darwin"
+

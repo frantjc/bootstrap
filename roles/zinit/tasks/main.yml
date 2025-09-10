@@ -4,6 +4,7 @@
   ansible.builtin.apt:
     name:
       - zsh
+  when: ansible_facts['os_family'] != "Darwin"
 
 - name: Install Zinit
   ansible.builtin.shell:
