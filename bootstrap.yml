@@ -18,13 +18,37 @@
     #   ansible.builtin.include_role:
     #     name: nerdctl
 
-    - name: Install Linuxbrew
+    - name: Install Homebrew
       ansible.builtin.include_role:
-        name: linuxbrew
+        name: homebrew
+
+    - name: Install formulas
+      community.general.homebrew:
+        name:
+          - dagger/tap/dagger
+          - go
+          - golangci-lint
+          - goreleaser
+          - k9s
+          - kind
+          - kubectx
+          - kubernetes-cli
+          - node
+          - yq
+
+    - name: Install casks
+      community.general.homebrew_cask:
+        name:
+          - frantjc/tap/forge
+          - frantjc/tap/rvglsm
 
     - name: Install Zinit
       ansible.builtin.include_role:
         name: zinit
+
+    - name: Configure ai
+      ansible.builtin.include_role:
+        name: ai
 
     - name: Configure aliases
       ansible.builtin.include_role:

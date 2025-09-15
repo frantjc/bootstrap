@@ -1,0 +1,46 @@
+---
+- name: Install ollama
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://ollama.com/install.sh | sh
+    creates: /usr/local/bin/ollama
+
+- name: Pull qwen3:8b
+  ansible.builtin.shell:
+    cmd: ollama pull qwen3:8b
+
+- name: Install crush
+  community.general.homebrew:
+    name:
+      - charmbracelet/tap/crush
+
+- name: Install container-use
+  community.general.homebrew_cask:
+    name:
+      - dagger/tap/container-use
+
+- name: Configure Copilot
+  vars:
+    github_token: lookup('ansible.builtin.env', 'GITHUB_TOKEN', default='') }}
+  ansible.builtin.template:
+    src: copilot.service
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/copilot.service"
+    mode: "0644"
+
+- name: Start Copilot
+  ansible.builtin.systemd_service:
+    name: copilot
+    state: started
+    enabled: true
+    scope: user
+
+- name: Configure crush to use container-use
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/dagger/container-use/main/rules/agent.md
+    dest: "{{ ansible_env.HOME }}/.config/crush/container-use.mdx"
+    mode: "0644"
+
+- name: Configure crush
+  ansible.builtin.template:
+    src: crush.json
+    dest: "{{ ansible_env.HOME }}/.config/crush/crush.json"
+    mode: "0644"

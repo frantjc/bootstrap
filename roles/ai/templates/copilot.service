@@ -1,0 +1,28 @@
+[Unit]
+Description=GitHub Copilot API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Environment=GH_TOKEN={{ github_token }}
+ExecStart=npx --yes copilot-api@latest start
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+StartLimitBurst=3
+StartLimitInterval=60s
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+Delegate=yes
+Type=simple
+KillMode=mixed
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

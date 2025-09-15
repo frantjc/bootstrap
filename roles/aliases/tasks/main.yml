@@ -11,31 +11,38 @@
     prepend_newline: true
     append_newline: true
     block: |
-      prev_kubeconfig="{{ ansible_env.HOME }}/.kube/.prev"
+      prev_kubeconfig_state="{{ ansible_env.HOME }}/.kube/.prev"
+      cur_kubeconfig_state="{{ ansible_env.HOME }}/.kube/.cur"
 
       default_kubeconfig="{{ ansible_env.HOME }}/.kube/config"
 
-      if [ ! -f "$prev_kubeconfig" ]; then
-          echo "$default_kubeconfig" > "$prev_kubeconfig"
+      if [ ! -f "$prev_kubeconfig_state" ]; then
+        echo "$default_kubeconfig" > "$prev_kubeconfig_state"
       fi
 
-      export KUBECONFIG="$(cat "$prev_kubeconfig")"
+      if [ ! -f "$cur_kubeconfig_state" ]; then
+        echo "$default_kubeconfig" > "$cur_kubeconfig_state"
+      fi
+
+      export KUBECONFIG="$(cat "$cur_kubeconfig_state")"
 
       kubeconfigd="{{ ansible_env.HOME }}/.kube/config.d"
 
       mkdir -p "$kubeconfigd"
 
       kubeconfig () {
-          current_kubeconfig="${KUBECONFIG:-"$default_kubeconfig"}"
-          if [[ "$1" == "-" ]]; then
-            export KUBECONFIG="$(cat "$prev_kubeconfig")"
-            echo "$current_kubeconfig" > "$prev_kubeconfig"
-          elif [[ $(find "$kubeconfigd" -type f | wc -l) -gt 0 ]]; then
-            export KUBECONFIG="$(find "$kubeconfigd" -type f | fzf)"
-            echo "$current_kubeconfig" > "$prev_kubeconfig"
-          else
-            echo "no files found in ${kubeconfigd}"
-          fi
+        prev_kubeconfig="${KUBECONFIG:-"$default_kubeconfig"}"
+        if [[ "$1" == "-" ]]; then
+          export KUBECONFIG="$(cat "$prev_kubeconfig_state")"
+          echo "$KUBECONFIG" > "$cur_kubeconfig_state"
+          echo "$prev_kubeconfig" > "$prev_kubeconfig_state"
+        elif [[ $(find "$kubeconfigd" -type f | wc -l) -gt 0 ]]; then
+          export KUBECONFIG="$(find "$kubeconfigd" -type f | fzf)"
+          echo "$KUBECONFIG" > "$cur_kubeconfig_state"
+          echo "$prev_kubeconfig" > "$prev_kubeconfig_state"
+        else
+          echo "no files found in ${kubeconfigd}"
+        fi
       }
 
       alias kubecfg="kubeconfig"
