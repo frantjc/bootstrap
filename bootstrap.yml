@@ -10,9 +10,9 @@
       ansible.builtin.include_role:
         name: openrct2
 
-    - name: Install curseforge
-      ansible.builtin.include_role:
-        name: curseforge
+    # - name: Install curseforge
+    #   ansible.builtin.include_role:
+    #     name: curseforge
 
     # - name: Install nerdctl
     #   ansible.builtin.include_role:
@@ -22,15 +22,18 @@
       ansible.builtin.include_role:
         name: homebrew
 
+    - name: Tap repositories
+      community.general.homebrew_tap:
+        name:
+          - dagger/tap
+          - frantjc/tap
+
     - name: Install formulas
       community.general.homebrew:
         name:
           - dagger/tap/dagger
           - go
-          - golangci-lint
-          - goreleaser
           - k9s
-          - kind
           - kubectx
           - kubernetes-cli
           - node
@@ -46,9 +49,9 @@
       ansible.builtin.include_role:
         name: zinit
 
-    - name: Configure ai
-      ansible.builtin.include_role:
-        name: ai
+    # - name: Configure ai
+    #   ansible.builtin.include_role:
+    #     name: ai
 
     - name: Configure aliases
       ansible.builtin.include_role:
@@ -67,19 +70,29 @@
       community.general.snap:
         name:
           - discord
-          - ghostty
           - spotify
           - steam
+
+    - name: Install classic snap packages
+      become: true
+      community.general.snap:
+        name:
+          - ghostty
+        classic: true
+
+    - name: Install flatpak
+      become: true
+      ansible.builtin.apt:
+        name:
+          - flatpak
 
     - name: Install flatpak packages
       community.general.flatpak:
         method: user
         name:
-          - at.vintagestory.VintageStory
           - chat.revolt.RevoltDesktop
           - com.github.iwalton3.jellyfin-media-player
           - https://mickael9.github.io/rvgl-flatpak/rvgl.flatpakref
-        state: present
 
     - name: Install Odamex
       ansible.builtin.include_role:
