@@ -1,0 +1,56 @@
+---
+- name: Stat
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/pokemon/rejuvenation/Game.AppImage"
+  register: stat
+
+- name: Install
+  when: not stat.stat.exists
+  block:
+    - name: Install unzip
+      community.general.homebrew:
+        name:
+          - unzip
+
+    - name: Install megacmd
+      become: true
+      ansible.builtin.apt:
+        deb: https://mega.nz/linux/repo/xUbuntu_24.04/amd64/megacmd-xUbuntu_24.04_amd64.deb
+
+    - name: Tmp download dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: download
+
+    - name: Download
+      ansible.builtin.shell:
+        cmd: mega-get https://mega.nz/file/cUoHATBI#dZKajQ9K7DTA2D6jyinoyuzIjk-n9KJO2Ziwj73UASk "{{ download.path }}"
+
+    - name: Install dir
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/pokemon/rejuvenation"
+        state: directory
+        mode: "0755"
+
+    - name: Unzip
+      ansible.builtin.shell:
+        chdir: "{{ ansible_env.HOME }}/pokemon/rejuvenation"
+        cmd: |
+          unzip "{{ download.path }}/Rejuvenation-13.5.0-linux.zip"
+          chmod +x "{{ ansible_env.HOME }}/pokemon/rejuvenation/Game.AppImage"
+        creates: "{{ ansible_env.HOME }}/pokemon/rejuvenation/Game.AppImage"
+
+    - name: Tmp checkout dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: checkout
+
+    - name: Clone
+      ansible.builtin.git:
+        repo: https://github.com/frantjc/pokemon-debug.git
+        dest: "{{ checkout.path }}"
+
+    - name: Apply debug patches
+      ansible.builtin.shell:
+        chdir: "{{ checkout.path }}/rejuvenation"
+        cmd: make pokemon-debug-menu debug-menu POKEMON_REJUVENATION="{{ ansible_env.HOME }}/pokemon/rejuvenation"

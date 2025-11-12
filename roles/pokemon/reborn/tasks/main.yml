@@ -1,28 +1,36 @@
 ---
-- name: Install unzip
-  community.general.homebrew:
-    name:
-      - unzip
+- name: Stat
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/pokemon/reborn/Game.AppImage"
+  register: stat
 
-- name: Tmp download dir
-  ansible.builtin.tempfile:
-    state: directory
-  register: download
+- name: Install
+  when: not stat.stat.exists
+  block:
+    - name: Install unzip
+      community.general.homebrew:
+        name:
+          - unzip
 
-- name: Download
-  ansible.builtin.shell:
-    cmd: curl -fsSLo {{ download.path }}/reborn-linux.zip https://pkmnfan.games/reborn-linux
+    - name: Tmp download dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: download
 
-- name: Install dir
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/pokemon/reborn"
-    state: directory
-    mode: '0755'
+    - name: Download
+      ansible.builtin.shell:
+        cmd: curl -fsSLo "{{ download.path }}/reborn-linux.zip" https://pkmnfan.games/reborn-linux
 
-- name: Unzip
-  ansible.builtin.shell:
-    chdir: "{{ ansible_env.HOME }}/pokemon/reborn"
-    cmd: |
-      unzip "{{ download.path }}/reborn-linux.zip"
-      chmod +x "{{ ansible_env.HOME }}/pokemon/reborn/Game.AppImage"
-    creates: "{{ ansible_env.HOME }}/pokemon/reborn/Game.AppImage"
+    - name: Install dir
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/pokemon/reborn"
+        state: directory
+        mode: "0755"
+
+    - name: Unzip
+      ansible.builtin.shell:
+        chdir: "{{ ansible_env.HOME }}/pokemon/reborn"
+        cmd: |
+          unzip "{{ download.path }}/reborn-linux.zip"
+          chmod +x "{{ ansible_env.HOME }}/pokemon/reborn/Game.AppImage"
+        creates: "{{ ansible_env.HOME }}/pokemon/reborn/Game.AppImage"

@@ -1,3 +1,4 @@
 ---
 dependencies:
   - role: pokemon/reborn
+  - role: pokemon/rejuvenation
