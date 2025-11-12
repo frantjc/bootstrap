@@ -4,8 +4,9 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
+Environment=PATH={{ lookup('ansible.builtin.env', 'PATH') }}
 Environment=GH_TOKEN={{ github_token }}
-ExecStart=npx --yes copilot-api@latest start
+ExecStart={{ npx_path }} --yes copilot-api@latest start
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2

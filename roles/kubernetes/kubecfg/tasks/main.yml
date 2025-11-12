@@ -4,7 +4,7 @@
     name:
       - fzf
 
-- name: Configure kubeconfig
+- name: Configure zsh
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR KUBECONFIG"
@@ -30,7 +30,7 @@
 
       mkdir -p "$kubeconfigd"
 
-      kubeconfig () {
+      kubecfg () {
         prev_kubeconfig="${KUBECONFIG:-"$default_kubeconfig"}"
         if [[ "$1" == "-" ]]; then
           export KUBECONFIG="$(cat "$prev_kubeconfig_state")"
@@ -45,5 +45,4 @@
         fi
       }
 
-      alias kubecfg="kubeconfig"
       alias kcfg="kubecfg"

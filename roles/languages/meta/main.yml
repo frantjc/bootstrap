@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: languages/go
+  - role: languages/node

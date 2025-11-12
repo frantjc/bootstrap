@@ -1,0 +1,15 @@
+---
+- name: Install
+  community.general.homebrew:
+    name:
+      - kubernetes-cli
+      - yq
+
+- name: Configure zsh
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR KUBECTL"
+    prepend_newline: true
+    append_newline: true
+    block: |
+      alias k="kubectl"

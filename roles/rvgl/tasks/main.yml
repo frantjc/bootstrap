@@ -1,0 +1,6 @@
+---
+- name: Install
+  community.general.flatpak:
+    method: user
+    name:
+      - https://mickael9.github.io/rvgl-flatpak/rvgl.flatpakref

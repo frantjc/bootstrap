@@ -1,0 +1,14 @@
+---
+- name: Install
+  community.general.homebrew:
+    name:
+      - k9s
+
+- name: Configure zsh
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR K9S"
+    prepend_newline: true
+    append_newline: true
+    block: |
+      alias k9="k9s"

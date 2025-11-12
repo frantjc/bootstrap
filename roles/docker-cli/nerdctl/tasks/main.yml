@@ -20,9 +20,3 @@
   ansible.builtin.shell:
     cmd: containerd-rootless-setuptool.sh install-buildkit
     creates: "{{ ansible_env.HOME }}/.config/systemd/user/buildkit.service"
-
-- name: Symlink docker
-  ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/.local/bin/nerdctl"
-    dest: "{{ ansible_env.HOME }}/.local/bin/docker"
-    state: link

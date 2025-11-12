@@ -1,0 +1,14 @@
+---
+- name: Install
+  community.general.homebrew:
+    name:
+      - kubectx
+
+- name: Configure zsh
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR KUBECTX"
+    prepend_newline: true
+    append_newline: true
+    block: |
+      alias kctx="kubectx"

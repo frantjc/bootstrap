@@ -1,0 +1,10 @@
+---
+- name: Tap
+  community.general.homebrew_tap:
+    name:
+      - frantjc/tap
+
+- name: Install
+  community.general.homebrew_cask:
+    name:
+      - frantjc/tap/rvglsm

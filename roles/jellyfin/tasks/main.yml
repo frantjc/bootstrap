@@ -1,0 +1,6 @@
+---
+- name: Install flatpak packages
+  community.general.flatpak:
+    method: user
+    name:
+      - com.github.iwalton3.jellyfin-media-player
