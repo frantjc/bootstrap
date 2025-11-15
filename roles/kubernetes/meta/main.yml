@@ -1,6 +1,7 @@
 ---
 dependencies:
   - role: kubernetes/k9s
+  - role: kubernetes/kind
   - role: kubernetes/kubecfg
   - role: kubernetes/kubectl
   - role: kubernetes/kubectx

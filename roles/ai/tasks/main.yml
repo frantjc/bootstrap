@@ -8,15 +8,15 @@
   ansible.builtin.shell:
     cmd: ollama pull qwen3:8b
 
-- name: Install npx
-  community.general.homebrew:
-    name:
-      - node
+- name: Register npx path
+  ansible.builtin.shell:
+    cmd: whixh npx
+  register: _which_npx
 
 - name: Configure Copilot
   vars:
     github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
-    npx_path: "/home/linuxbrew/.linuxbrew/bin/npx"
+    npx_path: "{{ _which_npx.stdout }}"
   ansible.builtin.template:
     src: copilot.service
     dest: "{{ ansible_env.HOME }}/.config/systemd/user/copilot.service"

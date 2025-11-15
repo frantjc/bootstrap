@@ -1,4 +1,10 @@
 ---
+- name: Install dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - uidmap
+
 - name: Install
   community.general.homebrew:
     name:

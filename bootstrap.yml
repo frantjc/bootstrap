@@ -1,18 +1,30 @@
 ---
-- name: Bootstrap system
+# - name: Bootstrap system
+#   hosts: all
+#   roles:
+#     - role: ai
+#     - role: dagger
+#     - role: discord
+#     - role: docker-cli
+#     - role: editor
+#     - role: jellyfin
+#     - role: kubernetes
+#     - role: languages
+#     - role: pokemon
+#     - role: rvgl
+#     - role: spotify
+#     - role: steam
+#     - role: xdg
+#     - role: zinit
+
+- name: Create bootstrap cluster
+  hosts: localhost
+  environment:
+    KUBECONFIG: "{{ ansible_env.HOME }}/.kube/config.d/kind.kc"
+  roles:
+    - role: capi/bootstrap-cluster
+
+- name: Prepare BYOH hosts
   hosts: all
   roles:
-    - { role: ai }
-    - { role: dagger }
-    - { role: discord }
-    - { role: docker-cli }
-    - { role: editor }
-    - { role: jellyfin }
-    - { role: kubernetes }
-    - { role: languages }
-    - { role: pokemon }
-    - { role: rvgl }
-    - { role: spotify }
-    - { role: steam }
-    - { role: xdg }
-    - { role: zinit }
+    - role: capi/byoh-host

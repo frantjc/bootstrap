@@ -1,0 +1,55 @@
+---
+- name: Create cluster
+  ansible.builtin.shell:
+    cmd: systemd-run --scope --user -p "Delegate=yes" kind create cluster || true
+
+- name: Export CAPI BYOH controller image
+  ansible.builtin.shell:
+    cmd: dagger -c 'git https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost | ref v0.5.0 | tree | dockerBuild | exportImage projects.registry.vmware.com/cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0'
+
+- name: Import CAPI BYOK controller image
+  ansible.builtin.shell:
+    cmd: podman save projects.registry.vmware.com/cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0 | kind load image-archive /dev/stdin
+
+- name: Init cluster
+  ansible.builtin.shell:
+    cmd: clusterctl init --infrastructure byoh
+
+- name: Register apiserver
+  ansible.builtin.shell:
+    cmd: kubectl config view -ojsonpath='{.clusters[0].cluster.server}'
+  register: _apiserver
+
+- name: Register cacert
+  ansible.builtin.shell:
+    cmd: kubectl config view --raw -ojsonpath='{.clusters[0].cluster.certificate-authority-data}'
+  register: _cacert
+
+- name: Wait for Deployment to be healthy
+  ansible.builtin.shell:
+    cmd: >-
+      kubectl wait --for=condition=available deployment/byoh-controller-manager -n byoh-system --timeout=60s
+
+- name: Apply BootstrapKubeconfig
+  ansible.builtin.shell:
+    cmd: |
+      cat <<YAML | kubectl apply -f -
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: BootstrapKubeconfig
+      metadata:
+        name: default
+        namespace: default
+      spec:
+        apiserver: "{{ _apiserver.stdout }}"
+        certificate-authority-data: "{{ _cacert.stdout }}"
+      YAML
+
+- name: Get bootstrap kubeconfig data
+  ansible.builtin.shell:
+    cmd: |
+      kubectl get bootstrapkubeconfig default -o=jsonpath='{.status.bootstrapKubeconfigData}'
+  register: _bootstrapkubeconfigdata
+
+- name: Set bootstrap kubeconfig
+  ansible.builtin.set_fact:
+    bootstrap_kubeconfig: "{{ _bootstrapkubeconfigdata.stdout | from_yaml }}"

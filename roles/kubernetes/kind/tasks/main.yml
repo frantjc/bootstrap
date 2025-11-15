@@ -1,0 +1,34 @@
+---
+- name: Install
+  community.general.homebrew:
+    name:
+      - kind
+
+- name: Prepare
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/system/user@.service.d/
+    state: directory
+
+- name: Configure systemd
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/user@.service.d/delegate.conf
+    content: |
+      [Service]
+      Delegate=yes
+
+- name: Configure iptables
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/iptables.conf
+    content: |
+      ip6_tables
+      ip6table_nat
+      ip_tables
+      iptable_nat
+
+- name: Reload systemd daemon
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true

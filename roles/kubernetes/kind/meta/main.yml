@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: homebrew
+  - role: docker-cli/podman
+  - role: kubernetes/kubectl

@@ -1,0 +1,65 @@
+---
+- name: Install dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - curl
+      - socat
+      - ebtables
+      - ethtool
+      - conntrack
+
+- name: Install BYOH Hostagent
+  ansible.builtin.shell:
+    cmd: |
+      curl -fsSLo /usr/local/bin/capi-byoh-hostagent https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost/releases/download/v0.3.0/byoh-hostagent-linux-amd64
+      chmod +x /usr/local/bin/capi-byoh-hostagent
+
+- name: Register hostname
+  ansible.builtin.shell:
+    cmd: hostname
+  register: _hostname
+
+# - name: Add hostname to /etc/hosts
+#   become: true
+#   ansible.builtin.blockinfile:
+#     path: /etc/hosts
+#     marker: "# {mark} CAPI BYOH setup"
+#     block: |
+#       127.0.0.1 {{ _hostname.stdout }}
+
+- name: Prepare
+  become: true
+  ansible.builtin.file:
+    path: /etc/capi/byoh
+    state: directory
+
+- name: Create bootstrap-kubeconfig.conf
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/capi/byoh/bootstrap-kubeconfig.conf
+    content: "{{ bootstrap_kubeconfig | to_nice_yaml }}"
+
+- name: Create CAPI BYOH hostagent systemd unit
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/capi-byoh-hostagent.service
+    content: |
+      [Unit]
+      Description=CAPI BYOH hostagent
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/local/bin/capi-byoh-hostagent --bootstrap-kubeconfig bootstrap-kubeconfig.conf
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable CAPI BYOH hostagent now
+  become: true
+  ansible.builtin.systemd:
+    name: capi-byoh-hostagent
+    enabled: yes
+    state: started
+    daemon_reload: yes
