@@ -18,9 +18,10 @@
 #     - role: zinit
 
 - name: Create bootstrap cluster
-  hosts: localhost
+  hosts: desktop
   environment:
     KUBECONFIG: "{{ ansible_env.HOME }}/.kube/config.d/kind.kc"
+    PATH: "/home/linuxbrew/.linuxbrew/bin:/bin:/usr/bin:/usr/local/bin:{{ ansible_env.HOME }}/.local/bin"
   roles:
     - role: capi/bootstrap-cluster
 

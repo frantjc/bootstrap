@@ -9,11 +9,16 @@
       - ethtool
       - conntrack
 
-- name: Install BYOH Hostagent
+- name: Download BYOH Hostagent
+  become: true
   ansible.builtin.shell:
-    cmd: |
-      curl -fsSLo /usr/local/bin/capi-byoh-hostagent https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost/releases/download/v0.3.0/byoh-hostagent-linux-amd64
-      chmod +x /usr/local/bin/capi-byoh-hostagent
+    cmd: curl -fsSLo /usr/local/bin/capi-byoh-hostagent https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost/releases/download/v0.5.0/byoh-hostagent-linux-amd64
+    creates: /usr/local/bin/capi-byoh-hostagent
+
+- name: Install BYOH Hostagent
+  become: true
+  ansible.builtin.shell:
+    cmd: chmod +x /usr/local/bin/capi-byoh-hostagent
 
 - name: Register hostname
   ansible.builtin.shell:
@@ -50,7 +55,7 @@
       After=network.target
 
       [Service]
-      ExecStart=/usr/local/bin/capi-byoh-hostagent --bootstrap-kubeconfig bootstrap-kubeconfig.conf
+      ExecStart=/usr/local/bin/capi-byoh-hostagent --bootstrap-kubeconfig /etc/capi/byoh/bootstrap-kubeconfig.conf
       Restart=always
 
       [Install]
