@@ -1,17 +1,24 @@
 ---
-- name: Install ollama
-  ansible.builtin.shell:
-    cmd: curl -fsSL https://ollama.com/install.sh | sh
-    creates: /usr/local/bin/ollama
+# - name: Install ollama
+#   become: true
+#   ansible.builtin.shell:
+#     cmd: curl -fsSL https://ollama.com/install.sh | sh
+#     creates: /usr/local/bin/ollama
 
-- name: Pull qwen3:8b
-  ansible.builtin.shell:
-    cmd: ollama pull qwen3:8b
+# - name: Pull qwen3:8b
+#   ansible.builtin.shell:
+#     cmd: ollama pull qwen3:8b
 
 - name: Register npx path
   ansible.builtin.shell:
-    cmd: whixh npx
+    cmd: which npx
   register: _which_npx
+
+- name: Prepare
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/systemd/user"
+    state: directory
+    mode: "0755"
 
 - name: Configure Copilot
   vars:
