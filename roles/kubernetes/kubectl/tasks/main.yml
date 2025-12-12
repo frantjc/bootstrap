@@ -13,3 +13,4 @@
     append_newline: true
     block: |
       alias k="kubectl"
+      export EDITOR="nano"
