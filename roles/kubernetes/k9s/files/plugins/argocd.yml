@@ -1,45 +1,58 @@
 plugins:
   refresh:
+    shortCut: Shift-R
+    description: Refresh ArgoCD Application
     scopes:
-      - applications
-    shortCut: Ctrl-R
-    description: Refresh
-    command: sh
-    background: false
+      - apps
+    background: true
+    command: kubectl
     args:
-      - -c
-      - |
-        kubectl annotate app $NAME -n $NAMESPACE argocd.argoproj.io/refresh=normal
+      - annotate
+      - application
+      - --namespace=$NAMESPACE
+      - $NAME
+      - argocd.argoproj.io/refresh=normal
+
   hard-refresh:
+    shortCut: Shift-H
+    description: Hard refresh ArgoCD Application
     scopes:
-      - applications
-    shortCut: Ctrl-H
-    description: Hard refresh
-    command: sh
-    background: false
+      - apps
+    background: true
+    command: kubectl
     args:
-      - -c
-      - |
-        kubectl annotate app $NAME -n $NAMESPACE argocd.argoproj.io/refresh=hard
-  pause:
+      - annotate
+      - application
+      - --namespace=$NAMESPACE
+      - $NAME
+      - argocd.argoproj.io/refresh=normal
+
+  disable-auto-sync:
+    shortCut: Shift-V
+    description: Disable ArgoCD Application auto sync
     scopes:
-      - applications
-    shortCut: Ctrl-P
-    description: Disable auto sync
-    command: sh
-    background: false
+      - apps
+    background: true
+    command: kubectl
     args:
-      - -c
-      - |
-        kubectl patch app $NAME -n $NAMESPACE --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":false,"selfHeal":false}}}}'
-  sync:
+      - patch
+      - applications
+      - --namespace=$NAMESPACE
+      - $NAME
+      - --type=json
+      - '-p=[{"op":"replace", "path": "/spec/syncPolicy", "value": {}}]'
+
+  enable-auto-sync:
+    shortCut: Shift-B
+    description: Enable ArgoCD Application auto sync
     scopes:
-      - applications
-    shortCut: Ctrl-S
-    description: Enable auto sync
-    command: sh
-    background: false
+      - apps
+    background: true
+    command: kubectl
     args:
-      - -c
-      - |
-        kubectl patch app $NAME -n $NAMESPACE --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+      - patch
+      - applications
+      - --namespace=$NAMESPACE
+      - $NAME
+      - --type=merge
+      - '-p={"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true},"syncOptions":["ApplyOutOfSyncOnly=true","CreateNamespace=true","PruneLast=true","PrunePropagationPolicy=foreground"]}}}'
