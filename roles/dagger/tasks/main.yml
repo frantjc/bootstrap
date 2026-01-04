@@ -17,6 +17,8 @@
     append_newline: true
     block: |
       alias dag="dagger"
+      export DAGGER_NO_NAG="1"
+      export DO_NOT_TRACK="1"
 
 # TODO(frantjc) on desktop: export _EXPERIMENTAL_DAGGER_RUNNER_HOST="image+podman://registry.dagger.io/engine?port=1234"
 # on laptop: export _EXPERIMENTAL_DAGGER_RUNNER_HOST="tcp://<desktop>:1234"
