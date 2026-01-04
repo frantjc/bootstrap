@@ -9,11 +9,11 @@
           'XDG_CONFIG_HOME': ansible_env.HOME + '/.config',
           'XDG_STATE_HOME': ansible_env.HOME + '/.local/state',
           'XDG_CACHE_HOME': ansible_env.HOME + '/.cache',
-          'PATH': ansible_env.PATH + ':' + ansible_env.HOME + '/.local/bin'
+          'PATH': ansible_env.HOME + '/.local/bin:' + ansible_env.PATH
         })
       }}
 
-- name: Configure
+- name: Configure zsh
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR XDG"

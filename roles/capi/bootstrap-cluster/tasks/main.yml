@@ -3,30 +3,36 @@
   ansible.builtin.shell:
     cmd: systemd-run --scope --user -p "Delegate=yes" kind create cluster || true
 
+- name: Get dagger fullpath
+  ansible.builtin.command: which dagger
+  register: _which_dagger
+  changed_when: false
+
 - name: Export CAPI BYOH controller image
   ansible.builtin.shell:
-    cmd: dagger -c 'git https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost | ref v0.5.0 | tree | dockerBuild | exportImage projects.registry.vmware.com/cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0'
+    executable: "{{ _which_dagger.stdout }}"
+    cmd: git https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost | ref v0.5.0 | tree | dockerBuild | exportImage projects.registry.vmware.com/cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0
 
 - name: Import CAPI BYOK controller image
   ansible.builtin.shell:
     cmd: podman save projects.registry.vmware.com/cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0 | kind load image-archive /dev/stdin
 
 - name: Init cluster
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: clusterctl init --infrastructure byoh
 
 - name: Register apiserver
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: kubectl config view -ojsonpath='{.clusters[0].cluster.server}'
   register: _apiserver
 
 - name: Register cacert
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: kubectl config view --raw -ojsonpath='{.clusters[0].cluster.certificate-authority-data}'
   register: _cacert
 
 - name: Wait for Deployment to be healthy
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: >-
       kubectl wait --for=condition=available deployment/byoh-controller-manager -n byoh-system --timeout=60s
 
@@ -45,7 +51,7 @@
       YAML
 
 - name: Get bootstrap kubeconfig data
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: |
       kubectl get bootstrapkubeconfig default -o=jsonpath='{.status.bootstrapKubeconfigData}'
   register: _bootstrapkubeconfigdata

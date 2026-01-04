@@ -1,4 +1,9 @@
 ---
+- name: Install rustup
+  ansible.builtin.shell:
+    cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+
 - name: Configure zsh
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
@@ -6,9 +11,4 @@
     prepend_newline: true
     append_newline: true
     block: |
-      . "{{ ansible_env.HOME }}/.cargo/env"
-
-- name: Install rustup
-  ansible.builtin.shell:
-    cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+      . "$HOME/.cargo/env"
