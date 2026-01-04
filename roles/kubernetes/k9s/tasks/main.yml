@@ -4,6 +4,12 @@
     name:
       - k9s
 
+- name: Copy plugins
+  ansible.builtin.copy:
+    src: plugins/
+    dest: "{{ ansible_env.XDG_CONFIG_HOME }}/k9s/plugins"
+    mode: "0644"
+
 - name: Configure zsh
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
@@ -12,3 +18,4 @@
     append_newline: true
     block: |
       alias k9="k9s"
+

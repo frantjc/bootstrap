@@ -1,0 +1,45 @@
+plugins:
+  refresh:
+    scopes:
+      - applications
+    shortCut: Ctrl-R
+    description: Refresh
+    command: sh
+    background: false
+    args:
+      - -c
+      - |
+        kubectl annotate app $NAME -n $NAMESPACE argocd.argoproj.io/refresh=normal
+  hard-refresh:
+    scopes:
+      - applications
+    shortCut: Ctrl-H
+    description: Hard refresh
+    command: sh
+    background: false
+    args:
+      - -c
+      - |
+        kubectl annotate app $NAME -n $NAMESPACE argocd.argoproj.io/refresh=hard
+  pause:
+    scopes:
+      - applications
+    shortCut: Ctrl-P
+    description: Disable auto sync
+    command: sh
+    background: false
+    args:
+      - -c
+      - |
+        kubectl patch app $NAME -n $NAMESPACE --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":false,"selfHeal":false}}}}'
+  sync:
+    scopes:
+      - applications
+    shortCut: Ctrl-S
+    description: Enable auto sync
+    command: sh
+    background: false
+    args:
+      - -c
+      - |
+        kubectl patch app $NAME -n $NAMESPACE --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
