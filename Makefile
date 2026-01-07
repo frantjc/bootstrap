@@ -1,5 +1,5 @@
 ANSIBLE_PLAYBOOK ?= ansible-playbook
-ANSIBLE_ARGS ?= -K
+ANSIBLE_ARGS ?= -K -i inventory/localhost.ini
 
 .PHONY: bootstrap
 bootstrap:
