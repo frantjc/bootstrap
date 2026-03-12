@@ -19,4 +19,5 @@
     block: |
       ZSH_THEME="bureau"
       zinit snippet OMZL::clipboard.zsh
+      zinit snippet OMZL::nvm.zsh
       zinit snippet OMZT::$ZSH_THEME
