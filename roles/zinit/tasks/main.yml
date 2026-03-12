@@ -18,19 +18,5 @@
     append_newline: true
     block: |
       ZSH_THEME="bureau"
-      zinit snippet OMZL::git.zsh
-      zinit snippet OMZP::git
-      zinit cdclear -q
-      zinit snippet OMZP::golang
-      zinit snippet OMZP::helm
-      zinit snippet OMZP::k9s
-      zinit snippet OMZP::kubectl
-      zinit snippet OMZP::kubectx
-      zinit snippet OMZP::node
-      zinit snippet OMZP::npm
-      zinit snippet OMZP::ssh
-      zinit snippet OMZP::vscode
-      zinit snippet OMZP::yarn
       zinit snippet OMZL::clipboard.zsh
-      zinit snippet OMZL::nvm.zsh
       zinit snippet OMZT::$ZSH_THEME
