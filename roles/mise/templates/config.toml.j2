@@ -1,0 +1,45 @@
+[tools]
+blender = "5.0.1"
+godot = "4.6.1-stable"
+kind = "0.31.0"
+kubectl = "1.35.2"
+k9s = "0.50.18"
+yq = "4.52.4"
+go = "1.26.1"
+node = "25.8.1"
+kubens = "0.9.5"
+kubectx = "0.9.5"
+fzf = "0.70.0"
+python = "3.14.3"
+uv = "0.10.9"
+ansible-core = "2.20.3"
+
+[tools."pipx:git+https://github.com/ahujasid/blender-mcp.git@main"]
+version = "7636d13bded82eca58eb93c3f4cd8708dfdfbe8b"
+postinstall = '''
+mkdir -p ~/.blender
+curl -o ~/.blender/mcp.py https://raw.githubusercontent.com/ahujasid/blender-mcp/$MISE_TOOL_VERSION/addon.py
+'''
+
+[env]
+UV_PYTHON = { value = "{% raw %}{{ tools.python.path }}{% endraw %}", tools = true }
+EDITOR = "nano"
+DAGGER_NO_NAG="1"
+DO_NOT_TRACK="1"
+
+[shell_alias]
+k = "kubectl"
+dag = "dagger"
+kcfg="kubecfg"
+k9 = "k9s"
+kctx = "kubectx"
+kns = "kubens"
+
+[settings]
+experimental = true
+python.uv_venv_auto = "create|source"
+
+[hooks]
+postinstall = '''
+blender --background --python-expr "import bpy; bpy.ops.preferences.addon_install(filepath='"$HOME/.blender/mcp.py"'); bpy.ops.preferences.addon_enable(module='mcp'); bpy.ops.wm.save_userpref()"
+'''

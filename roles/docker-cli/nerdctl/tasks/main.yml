@@ -16,7 +16,7 @@
     cmd: containerd-rootless-setuptool.sh install
     creates: "{{ ansible_env.HOME }}/.config/systemd/user/containerd.service"
 
-- name: Install buidlkit
+- name: Install buildkit
   ansible.builtin.shell:
     cmd: containerd-rootless-setuptool.sh install-buildkit
     creates: "{{ ansible_env.HOME }}/.config/systemd/user/buildkit.service"

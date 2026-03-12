@@ -1,6 +1,0 @@
----
-dependencies:
-  - role: capi/clusterctl
-  - role: dagger
-  - role: kubernetes/kind
-  - role: kubernetes/kubecfg

@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: docker-cli
+  - role: kubecfg
+  - role: xdg

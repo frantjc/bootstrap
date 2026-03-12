@@ -1,5 +1,21 @@
 ---
-- name: Install
-  community.general.homebrew_cask:
+- name: Uninstall unofficial
+  become: true
+  ansible.builtin.apt:
     name:
-      - docker
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
+      - podman-docker
+    state: absent
+
+- name: Install
+  become: true
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin

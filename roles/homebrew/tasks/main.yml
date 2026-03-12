@@ -1,5 +1,0 @@
----
-- name: Install
-  ansible.builtin.shell:
-    cmd: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
-    creates: "/home/linuxbrew/.linuxbrew"

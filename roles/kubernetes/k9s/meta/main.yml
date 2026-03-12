@@ -1,5 +1,0 @@
----
-dependencies:
-  - role: xdg
-  - role: homebrew
-  - role: kubernetes/kubectl

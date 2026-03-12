@@ -25,7 +25,7 @@
     github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
     npx_path: "{{ _which_npx.stdout }}"
   ansible.builtin.template:
-    src: copilot.service
+    src: copilot.service.j2
     dest: "{{ ansible_env.HOME }}/.config/systemd/user/copilot.service"
     mode: "0644"
 
