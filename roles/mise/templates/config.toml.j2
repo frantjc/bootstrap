@@ -1,5 +1,5 @@
 [tools]
-blender = "5.0.1"
+blender = "4.5.3"
 godot = "4.6.1-stable"
 kind = "0.31.0"
 kubectl = "1.35.2"
@@ -13,6 +13,12 @@ fzf = "0.70.0"
 python = "3.14.3"
 uv = "0.10.9"
 ansible-core = "2.20.3"
+gcloud = "560.0.0"
+dagger = "0.20.1"
+gh = "2.88.1"
+
+[tools."npm:@github/copilot"]
+version = "1.0.4"
 
 [tools."pipx:git+https://github.com/ahujasid/blender-mcp.git@main"]
 version = "7636d13bded82eca58eb93c3f4cd8708dfdfbe8b"
@@ -22,7 +28,7 @@ curl -o ~/.blender/mcp.py https://raw.githubusercontent.com/ahujasid/blender-mcp
 '''
 
 [env]
-UV_PYTHON = { value = "{% raw %}{{ tools.python.path }}{% endraw %}", tools = true }
+# UV_PYTHON = { value = "{% raw %}{{ tools.python.path }}{% endraw %}", tools = true }
 EDITOR = "nano"
 DAGGER_NO_NAG="1"
 DO_NOT_TRACK="1"

@@ -1,0 +1,32 @@
+---
+- name: Install
+  block:
+    - name: Install apt packages
+      become: true
+      ansible.builtin.apt:
+        name:
+          - git
+          - dkms
+
+    - name: Tmp checkout dir
+      ansible.builtin.tempfile:
+        state: directory
+      register: checkout
+
+    - name: Clone
+      ansible.builtin.git:
+        repo: https://github.com/medusalix/xone.git
+        dest: "{{ checkout.path }}"
+        version: master
+
+    - name: Install
+      become: true
+      ansible.builtin.shell:
+        chdir: "{{ checkout.path }}"
+        cmd: ./install.sh
+
+    - name: Get firmware
+      become: true
+      ansible.builtin.shell:
+        chdir: "{{ checkout.path }}"
+        cmd: ./xone-get-firmware.sh
