@@ -8,11 +8,11 @@
 - name: Install Zinit
   ansible.builtin.shell:
     cmd: curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh | bash
-    creates: "{{ ansible_env.HOME }}/.local/share/zinit/zinit.git"
+    creates: "{{ ansible_facts['env']['HOME'] }}/.local/share/zinit/zinit.git"
 
 - name: Configure Zinit
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR ZINIT"
     prepend_newline: true
     append_newline: true

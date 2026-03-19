@@ -2,7 +2,7 @@
 - name: Bootstrap system
   hosts: all
   roles:
-    - role: ai
+    - role: claude
     - role: discord
     - role: editor
     - role: jellyfin

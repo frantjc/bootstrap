@@ -1,17 +1,12 @@
 ---
 - name: Stat
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/pokemon/rejuvenation/Game.AppImage"
+    path: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation/Game.AppImage"
   register: stat
 
 - name: Install
   when: not stat.stat.exists
   block:
-    - name: Install unzip
-      community.general.homebrew:
-        name:
-          - unzip
-
     - name: Install megacmd
       become: true
       ansible.builtin.apt:
@@ -24,20 +19,20 @@
 
     - name: Download
       ansible.builtin.shell:
-        cmd: mega-get https://mega.nz/file/cUoHATBI#dZKajQ9K7DTA2D6jyinoyuzIjk-n9KJO2Ziwj73UASk "{{ download.path }}"
+        cmd: "mega-get https://mega.nz/file/cUoHATBI#dZKajQ9K7DTA2D6jyinoyuzIjk-n9KJO2Ziwj73UASk {{ download.path }}"
 
     - name: Install dir
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/pokemon/rejuvenation"
+        path: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation"
         state: directory
 
     - name: Unzip
       ansible.builtin.shell:
-        chdir: "{{ ansible_env.HOME }}/pokemon/rejuvenation"
+        chdir: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation"
         cmd: |
           unzip "{{ download.path }}/Rejuvenation-13.5.0-linux.zip"
-          chmod +x "{{ ansible_env.HOME }}/pokemon/rejuvenation/Game.AppImage"
-        creates: "{{ ansible_env.HOME }}/pokemon/rejuvenation/Game.AppImage"
+          chmod +x "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation/Game.AppImage"
+        creates: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation/Game.AppImage"
 
     - name: Tmp checkout dir
       ansible.builtin.tempfile:
@@ -52,4 +47,4 @@
     - name: Apply debug patches
       ansible.builtin.shell:
         chdir: "{{ checkout.path }}/rejuvenation"
-        cmd: make pokemon-debug-menu debug-menu POKEMON_REJUVENATION="{{ ansible_env.HOME }}/pokemon/rejuvenation"
+        cmd: make pokemon-debug-menu debug-menu POKEMON_REJUVENATION="{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation"

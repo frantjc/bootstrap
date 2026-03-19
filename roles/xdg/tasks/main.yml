@@ -2,20 +2,20 @@
 # Ref: https://specifications.freedesktop.org/basedir-spec/latest.
 - name: Set facts
   ansible.builtin.set_fact:
-    ansible_env: |
+    bootstrap_env: |
       {{
-        ansible_env | combine({
-          'XDG_DATA_HOME': ansible_env.HOME + '/.local/share',
-          'XDG_CONFIG_HOME': ansible_env.HOME + '/.config',
-          'XDG_STATE_HOME': ansible_env.HOME + '/.local/state',
-          'XDG_CACHE_HOME': ansible_env.HOME + '/.cache',
-          'PATH': ansible_env.HOME + '/.local/bin:' + ansible_env.PATH
+        ansible_facts['env'] | combine({
+          'XDG_DATA_HOME': ansible_facts['env']['HOME'] + '/.local/share',
+          'XDG_CONFIG_HOME': ansible_facts['env']['HOME'] + '/.config',
+          'XDG_STATE_HOME': ansible_facts['env']['HOME'] + '/.local/state',
+          'XDG_CACHE_HOME': ansible_facts['env']['HOME'] + '/.cache',
+          'PATH': ansible_facts['env']['HOME'] + '/.local/bin:' + ansible_facts['env']['PATH']
         })
       }}
 
 - name: Configure zsh
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR XDG"
     prepend_newline: true
     append_newline: true

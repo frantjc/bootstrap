@@ -1,15 +1,15 @@
 ---
 - name: Install
   ansible.builtin.shell:
-    cmd: curl https://mise.run | {{ ansible_env.SHELL }}
-    creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+    cmd: curl https://mise.run | {{ ansible_facts['env']['SHELL'] }}
+    creates: "{{ ansible_facts['env']['HOME'] }}/.local/bin/mise"
 
 - name: Configure
   ansible.builtin.template:
     src: config.toml.j2
-    dest: "{{ ansible_env.HOME }}/.config/mise/config.toml"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/mise/config.toml"
 
-- name: Prepare
+- name: Initialize
   ansible.builtin.shell:
-    chdir: "{{ ansible_env.HOME }}/.config/mise"
+    chdir: "{{ ansible_facts['env']['HOME'] }}/.config/mise"
     cmd: mise install

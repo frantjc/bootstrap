@@ -1,0 +1,81 @@
+---
+# - name: Install ollama
+#   become: true
+#   ansible.builtin.shell:
+#     cmd: curl -fsSL https://ollama.com/install.sh | sh
+#     creates: /usr/local/bin/ollama
+
+# - name: Pull qwen3:8b
+#   ansible.builtin.shell:
+#     cmd: ollama pull qwen3:8b
+
+- name: Register copilot-api path
+  ansible.builtin.shell:
+    cmd: which copilot-api
+  register: _which_copilot_api
+
+- name: Prepare Copilot API systemd directory
+  ansible.builtin.file:
+    path:
+      - "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user"
+      - "{{ ansible_facts['env']['HOME'] }}/.claude"
+    state: directory
+    mode: "0755"
+
+- name: Configure Copilot API
+  vars:
+    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+    copilot_api_path: "{{ _which_copilot_api.stdout }}"
+  ansible.builtin.template:
+    src: copilot-api.service.j2
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/copilot-api.service"
+    mode: "0644"
+
+- name: Start Copilot
+  ansible.builtin.systemd_service:
+    name: copilot-api
+    state: started
+    enabled: true
+    scope: user
+
+- name: Wait for Copilot API to become healthy
+  ansible.builtin.uri:
+    method: GET
+    url: http://localhost:4141
+  register: _copilot_api_health
+  retries: 9
+  delay: 1
+  until: _copilot_api_health.status == 200
+
+- name: Fetch Copilot API models
+  ansible.builtin.uri:
+    url: http://localhost:4141/models
+    method: GET
+    status_code: 200
+    return_content: true
+  register: _copilot_api_models_resp
+  changed_when: false
+
+- name: Stop if expected models are not supported
+  vars:
+    _copilot_api_models: "{{ _copilot_api_models_resp.content | from_json }}"
+    _copilot_api_model_ids: "{{ _copilot_api_models.data | map(attribute='id') | list }}"
+  ansible.builtin.assert:
+    that:
+      - anthropic_model in _copilot_api_model_ids
+      - anthropic_default_haiku_model in _copilot_api_model_ids
+  
+- name: Prepare Claude config directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.claude"
+    state: directory
+    mode: "0755"
+
+- name: Configure Claude
+  vars:
+    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+    copilot_api_path: "{{ _which_copilot_api.stdout }}"
+  ansible.builtin.template:
+    src: claude-settings.json.j2
+    dest: "{{ ansible_facts['env']['HOME'] }}/.claude/settings.json"
+    mode: "0644"

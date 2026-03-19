@@ -2,5 +2,5 @@
 - name: Install plugins
   ansible.builtin.copy:
     src: plugins/
-    dest: "{{ ansible_env.XDG_CONFIG_HOME }}/k9s/plugins"
+    dest: "{{ (bootstrap_env | default(ansible_facts['env']))['XDG_CONFIG_HOME'] | default(ansible_facts['env']['HOME'] + '/.config') }}/k9s/plugins"
     mode: "0644"

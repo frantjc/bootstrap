@@ -1,22 +1,22 @@
 ---
 - name: Download
   ansible.builtin.shell:
-    cmd: curl -fsSL https://github.com/containerd/nerdctl/releases/download/v2.1.4/nerdctl-2.1.4-linux-amd64.tar.gz | tar -xzf- -C {{ ansible_env.HOME }}/.local
-    creates: "{{ ansible_env.HOME }}/.local/bin/nerdctl"
+    cmd: curl -fsSL https://github.com/containerd/nerdctl/releases/download/v2.1.4/nerdctl-2.1.4-linux-amd64.tar.gz | tar -xzf- -C {{ ansible_facts['env']['HOME'] }}/.local
+    creates: "{{ ansible_facts['env']['HOME'] }}/.local/bin/nerdctl"
 
 - name: Rootlesskit apparmor
   become: true
   ansible.builtin.template:
     src: rootlesskit-apparmor
-    dest: "/etc/apparmor.d/{{ ansible_env.HOME | regex_replace('^/', '') | replace('/', '.') }}..local.bin.rootlesskit"
+    dest: "/etc/apparmor.d/{{ ansible_facts['env']['HOME'] | regex_replace('^/', '') | replace('/', '.') }}..local.bin.rootlesskit"
     mode: "0644"
 
 - name: Install containerd
   ansible.builtin.shell:
     cmd: containerd-rootless-setuptool.sh install
-    creates: "{{ ansible_env.HOME }}/.config/systemd/user/containerd.service"
+    creates: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/containerd.service"
 
 - name: Install buildkit
   ansible.builtin.shell:
     cmd: containerd-rootless-setuptool.sh install-buildkit
-    creates: "{{ ansible_env.HOME }}/.config/systemd/user/buildkit.service"
+    creates: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/buildkit.service"

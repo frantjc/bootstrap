@@ -1,15 +1,15 @@
 ---
 - name: Configure zsh
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR KUBECONFIG"
     prepend_newline: true
     append_newline: true
     block: |
-      prev_kubeconfig_state="{{ ansible_env.HOME }}/.kube/.prev"
-      cur_kubeconfig_state="{{ ansible_env.HOME }}/.kube/.cur"
+      prev_kubeconfig_state="{{ ansible_facts['env']['HOME'] }}/.kube/.prev"
+      cur_kubeconfig_state="{{ ansible_facts['env']['HOME'] }}/.kube/.cur"
 
-      default_kubeconfig="{{ ansible_env.HOME }}/.kube/config"
+      default_kubeconfig="{{ ansible_facts['env']['HOME'] }}/.kube/config"
 
       if [ ! -f "$prev_kubeconfig_state" ]; then
         echo "$default_kubeconfig" > "$prev_kubeconfig_state"
@@ -21,7 +21,7 @@
 
       export KUBECONFIG="$(cat "$cur_kubeconfig_state")"
 
-      kubeconfigd="{{ ansible_env.HOME }}/.kube/config.d"
+      kubeconfigd="{{ ansible_facts['env']['HOME'] }}/.kube/config.d"
 
       mkdir -p "$kubeconfigd"
 
