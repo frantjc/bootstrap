@@ -3,14 +3,16 @@
   hosts: all
   roles:
     - role: claude
-    - role: discord
-    - role: editor
-    - role: jellyfin
-    - role: k9s
-    - role: mise
-    - role: pokemon
-    - role: rvgl
-    - role: spotify
-    - role: steam
-    - role: xone
-    - role: zinit
+    # - role: discord
+    # - role: editor
+    # - role: gamemoded
+    # - role: jellyfin
+    # - role: k9s
+    # - role: mise
+    # - role: pokemon
+    # - role: rvgl
+    # - role: spotify
+    # - role: steam
+    # - role: terminal
+    # - role: xone
+    # - role: zinit

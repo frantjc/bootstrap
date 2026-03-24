@@ -17,7 +17,5 @@
     prepend_newline: true
     append_newline: true
     block: |
-      ZSH_THEME="bureau"
-      zinit snippet OMZL::clipboard.zsh
-      zinit snippet OMZL::nvm.zsh
-      zinit snippet OMZT::$ZSH_THEME
+      zinit ice compile'(pure|async).zsh' pick'async.zsh' src'pure.zsh'
+      zinit light sindresorhus/pure
