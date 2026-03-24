@@ -9,11 +9,6 @@
 #   ansible.builtin.shell:
 #     cmd: ollama pull qwen3:8b
 
-- name: Register copilot-api path
-  ansible.builtin.shell:
-    cmd: which copilot-api
-  register: _which_copilot_api
-
 - name: Prepare Copilot API systemd directory
   ansible.builtin.file:
     path:
@@ -25,7 +20,6 @@
 - name: Configure Copilot API
   vars:
     github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
-    copilot_api_path: "{{ _which_copilot_api.stdout }}"
   ansible.builtin.template:
     src: copilot-api.service.j2
     dest: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/copilot-api.service"
@@ -34,9 +28,10 @@
 - name: Start Copilot
   ansible.builtin.systemd_service:
     name: copilot-api
-    state: started
+    state: restarted
     enabled: true
     scope: user
+    daemon_reload: true
 
 - name: Wait for Copilot API to become healthy
   ansible.builtin.uri:
@@ -72,9 +67,6 @@
     mode: "0755"
 
 - name: Configure Claude
-  vars:
-    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
-    copilot_api_path: "{{ _which_copilot_api.stdout }}"
   ansible.builtin.template:
     src: claude-settings.json.j2
     dest: "{{ ansible_facts['env']['HOME'] }}/.claude/settings.json"
