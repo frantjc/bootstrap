@@ -1,0 +1,25 @@
+---
+- name: Install apt packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - git
+
+- name: Tmp checkout dir
+  ansible.builtin.tempfile:
+    state: directory
+  register: checkout
+
+- name: Clone
+  ansible.builtin.git:
+    repo: https://github.com/feralinteractive/gamemode.git
+    dest: "{{ checkout.path }}"
+    version: 1.8.2
+
+- name: Bootstrap
+  ansible.builtin.shell:
+    chdir: "{{ checkout.path }}"
+    cmd: ./bootstrap.sh
+
+- name: Test
+  ansible.builtin.command: gamemoded -t
