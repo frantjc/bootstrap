@@ -1,5 +1,4 @@
 [tools]
-blender = "4.5.3"
 claude = "2.1.79"
 godot = "4.6.1-stable"
 kind = "0.31.0"
@@ -9,16 +8,22 @@ yq = "4.52.4"
 go = "1.26.1"
 node = "25.8.1"
 "npm:copilot-api" = "0.7.0"
-"npm:@github/copilot" = "1.0.4"
 kubens = "0.9.5"
 kubectx = "0.9.5"
 fzf = "0.70.0"
 python = "3.14.3"
 uv = "0.10.9"
 ansible-core = "2.20.3"
-gcloud = "560.0.0"
-dagger = "0.20.1"
+dagger = "0.20.6"
 gh = "2.88.1"
+helm = "3"
+aws = { version = "2.34.33", symlink_bins = "true" }
+changie = "1.24.0"
+kustomize = "5.8.1"
+
+[tools.blender]
+version = "4.5.3"
+postinstall = "blender --register"
 
 [tools."pipx:git+https://github.com/ahujasid/blender-mcp.git@main"]
 version = "7636d13bded82eca58eb93c3f4cd8708dfdfbe8b"

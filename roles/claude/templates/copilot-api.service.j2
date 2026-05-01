@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 Environment=PATH=%h/.local/share/mise/shims:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=GH_TOKEN={{ github_token }}
-ExecStart=/usr/bin/env mise x -- copilot-api start --proxy-env
+ExecStart=/usr/bin/env copilot-api start --proxy-env
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2

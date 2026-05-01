@@ -5,7 +5,8 @@
     - role: claude
     - role: discord
     - role: editor
-    - role: gamemoded
+    # TODO(frantjc):
+    # - role: gamemoded
     - role: jellyfin
     - role: k9s
     - role: kind
