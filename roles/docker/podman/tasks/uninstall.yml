@@ -1,0 +1,12 @@
+---
+- name: System prune
+  ansible.builtin.command:
+    cmd: podman system prune -af
+  failed_when: false
+
+- name: Uninstall
+  become: true
+  ansible.builtin.apt:
+    name:
+      - podman
+    state: absent
