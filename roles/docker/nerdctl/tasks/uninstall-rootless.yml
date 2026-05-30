@@ -1,0 +1,83 @@
+---
+- name: System prune
+  ansible.builtin.command:
+    cmd: nerdctl system prune -af
+  failed_when: false
+
+- name: Uninstall BuildKit
+  ansible.builtin.command:
+    cmd: containerd-rootless-setuptool.sh uninstall-buildkit
+    removes: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/buildkit.service"
+
+- name: Uninstall containerd
+  ansible.builtin.command:
+    cmd: containerd-rootless-setuptool.sh uninstall
+    removes: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/containerd.service"
+
+- name: Remove RootlessKit AppArmor
+  become: true
+  vars:
+    _rootlesskit: "{{ ansible_facts['env']['HOME'] }}/.local/bin/rootlesskit"
+  ansible.builtin.file:
+    path: "/etc/apparmor.d/{{ _rootlesskit | regex_replace('^/', '') | replace('/', '.') }}"
+    state: absent
+  notify: systemd apparmor restart
+
+- name: Remove nerdctl full
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.local/{{ item }}"
+    state: absent
+  loop:
+    - bin/buildctl
+    - bin/buildg
+    - bin/buildkit-cni-bandwidth
+    - bin/buildkit-cni-bridge
+    - bin/buildkit-cni-dhcp
+    - bin/buildkit-cni-dummy
+    - bin/buildkit-cni-firewall
+    - bin/buildkit-cni-host-device
+    - bin/buildkit-cni-host-local
+    - bin/buildkit-cni-ipvlan
+    - bin/buildkit-cni-loopback
+    - bin/buildkit-cni-macvlan
+    - bin/buildkit-cni-portmap
+    - bin/buildkit-cni-ptp
+    - bin/buildkit-cni-sbr
+    - bin/buildkit-cni-static
+    - bin/buildkit-cni-tag
+    - bin/buildkit-cni-tuning
+    - bin/buildkit-cni-vlan
+    - bin/buildkit-cni-vrf
+    - bin/buildkitd
+    - bin/buildkit-qemu-aarch64
+    - bin/buildkit-qemu-arm
+    - bin/buildkit-qemu-i386
+    - bin/buildkit-qemu-ppc64le
+    - bin/buildkit-qemu-riscv64
+    - bin/buildkit-qemu-s390x
+    - bin/buildkit-runc
+    - bin/bypass4netns
+    - bin/bypass4netnsd
+    - bin/containerd
+    - bin/containerd-fuse-overlayfs-grpc
+    - bin/containerd-rootless-setuptool.sh
+    - bin/containerd-rootless.sh
+    - bin/containerd-shim-runc-v2
+    - bin/containerd-stargz-grpc
+    - bin/ctd-decoder
+    - bin/ctr
+    - bin/ctr-enc
+    - bin/ctr-remote
+    - bin/fuse-overlayfs
+    - bin/gomodjail
+    - bin/nerdctl
+    - bin/nerdctl.gomodjail
+    - bin/rootlessctl
+    - bin/rootlesskit
+    - bin/runc
+    - bin/stargz-fuse-manager
+    - bin/stargz-store-helper
+    - bin/tini
+    - lib
+    - libexec
+    - share/nerdctl

@@ -1,0 +1,7 @@
+---
+- name: Systemd AppArmor restart
+  listen: systemd apparmor restart
+  become: true
+  ansible.builtin.systemd:
+    name: apparmor
+    state: restarted

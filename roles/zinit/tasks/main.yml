@@ -1,10 +1,4 @@
 ---
-- name: Install apt packages
-  become: true
-  ansible.builtin.apt:
-    name:
-      - zsh
-
 - name: Install Zinit
   ansible.builtin.shell:
     cmd: curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh | bash

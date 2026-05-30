@@ -1,0 +1,12 @@
+---
+dependencies:
+  - role: docker
+  - role: mise
+    vars:
+      mise_tools:
+        - dagger@0.21.0
+      mise_env:
+        DAGGER_NO_NAG: 1
+        DO_NOT_TRACK: 1
+      mise_shell_aliases:
+        dag: dagger

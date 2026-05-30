@@ -1,0 +1,8 @@
+---
+dependencies:
+  - role: docker/docker
+    vars:
+      docker_state: "{{ 'present' if docker == 'docker' else 'absent' }}"
+  - role: docker/nerdctl
+    vars:
+      nerdctl_state: "{{ 'present' if docker == 'nerdctl' else 'absent' }}"

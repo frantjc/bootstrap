@@ -1,0 +1,28 @@
+---
+- name: Download nerdctl full
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://github.com/containerd/nerdctl/releases/download/v{{ nerdctl_version }}/nerdctl-full-{{ nerdctl_version }}-linux-amd64.tar.gz | tar -xzf- -C {{ ansible_facts['env']['HOME'] }}/.local
+    creates: "{{ ansible_facts['env']['HOME'] }}/.local/bin/nerdctl"
+
+- name: RootlessKit AppArmor
+  become: true
+  vars:
+    _rootlesskit: "{{ ansible_facts['env']['HOME'] }}/.local/bin/rootlesskit"
+  ansible.builtin.template:
+    src: rootlesskit-apparmor
+    dest: "/etc/apparmor.d/{{ _rootlesskit | regex_replace('^/', '') | replace('/', '.') }}"
+    mode: "0644"
+  notify: systemd apparmor restart
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Install containerd
+  ansible.builtin.command:
+    cmd: containerd-rootless-setuptool.sh install
+    creates: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/containerd.service"
+
+- name: Install BuildKit
+  ansible.builtin.command:
+    cmd: containerd-rootless-setuptool.sh install-buildkit
+    creates: "{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/buildkit.service"

@@ -1,4 +1,7 @@
 ---
 dependencies:
-  - role: docker-cli
+  - role: docker
   - role: mise
+    vars:
+      mise_tools:
+        - kind@0.31.0

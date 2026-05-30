@@ -12,6 +12,7 @@
     content: |
       [Service]
       Delegate=yes
+  notify: systemd daemon reload
 
 - name: Configure iptables
   become: true
@@ -22,8 +23,3 @@
       ip6table_nat
       ip_tables
       iptable_nat
-
-- name: Reload systemd daemon
-  become: true
-  ansible.builtin.systemd:
-    daemon_reload: true

@@ -1,0 +1,12 @@
+---
+dependencies:
+  - role: docker
+  - role: mise
+    vars:
+      mise_tools:
+        - python@3.14.3
+        - blender@4.5.3
+        - pipx@1.12.0
+        - pipx:git+https://github.com/ahujasid/blender-mcp.git@{{ blender_mcp_commit_sha }}
+      mise_settings:
+        python.uv_venv_auto: "create|source"

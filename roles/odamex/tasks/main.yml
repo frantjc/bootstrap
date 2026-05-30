@@ -2,10 +2,10 @@
 - name: Stat
   ansible.builtin.stat:
     path: /usr/local/bin/odamex
-  register: stat
+  register: _stat
 
 - name: Install
-  when: not stat.stat.exists
+  when: not _stat.stat.exists
   block:
     - name: Install apt packages
       become: true
@@ -35,7 +35,7 @@
     - name: Tmp checkout dir
       ansible.builtin.tempfile:
         state: directory
-      register: checkout
+      register: _checkout
 
     - name: Clone
       ansible.builtin.git:
@@ -46,14 +46,14 @@
     - name: Tmp build dir
       ansible.builtin.tempfile:
         state: directory
-      register: build
+      register: _build
 
     - name: Cmake
       become: true
       ansible.builtin.shell:
-        chdir: "{{ build.path }}"
+        chdir: "{{ _build.path }}"
         cmd: >-
-          cmake {{ checkout.path }} \
+          cmake {{ _checkout.path }} \
             -DBUILD_SERVER=0 \
             -DBUILD_CLIENT=1 \
             -DBUILD_LAUNCHER=0 \
@@ -68,7 +68,7 @@
     - name: Make
       become: true
       ansible.builtin.shell:
-        chdir: "{{ build.path }}"
+        chdir: "{{ _build.path }}"
         cmd: make -j$(nproc) odamex install
         creates: /usr/local/bin/odamex
 

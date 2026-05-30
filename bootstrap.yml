@@ -2,19 +2,20 @@
 - name: Bootstrap system
   hosts: all
   roles:
+    - role: blender
     - role: claude
-    - role: discord
+    - role: dagger
+    # - role: discord
     - role: editor
     # TODO(frantjc):
     # - role: gamemoded
-    - role: jellyfin
-    - role: k9s
+    # - role: jellyfin
+    - role: kubectl
     - role: kind
     - role: mise
-    - role: pokemon
-    - role: rvgl
-    - role: spotify
-    - role: steam
-    - role: terminal
-    - role: xone
-    - role: zinit
+    # - role: pokemon
+    # - role: rvgl
+    # - role: spotify
+    # - role: steam
+    # - role: terminal
+    # - role: xone

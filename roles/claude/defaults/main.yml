@@ -1,0 +1,5 @@
+---
+claude_anthropic_model: claude-sonnet-4.6
+claude_anthropic_default_sonnet_model: "{{ claude_anthropic_model }}"
+claude_anthropic_small_fast_model: gpt-5.4-mini
+claude_anthropic_default_haiku_model: "{{ claude_anthropic_small_fast_model }}"

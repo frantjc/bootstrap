@@ -4,12 +4,37 @@
     cmd: curl https://mise.run | {{ ansible_facts['env']['SHELL'] }}
     creates: "{{ ansible_facts['env']['HOME'] }}/.local/bin/mise"
 
-- name: Configure
-  ansible.builtin.template:
-    src: config.toml.j2
-    dest: "{{ ansible_facts['env']['HOME'] }}/.config/mise/config.toml"
+- name: Configure zsh
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR MISE"
+    prepend_newline: true
+    append_newline: true
+    block: |
+      eval "$(mise activate zsh)"
 
-- name: Initialize
-  ansible.builtin.shell:
+- name: Install tools
+  ansible.builtin.command:
+    cmd: mise use --global {{ item }}
+  loop: "{{ mise_tools | default([]) }}"
+
+- name: Set env vars
+  ansible.builtin.command:
+    cmd: mise set --global {{ item.key }}={{ item.value }}
+  loop: "{{ mise_env | default({}) | dict2items }}"
+
+- name: Configure settings
+  ansible.builtin.command:
+    cmd: mise settings set {{ item.key }} {{ item.value }}
+  loop: "{{ mise_settings | default({}) | dict2items }}"
+
+- name: Set shell aliases
+  ansible.builtin.command:
+    cmd: mise shell-alias set {{ item.key }}={{ item.value }}
     chdir: "{{ ansible_facts['env']['HOME'] }}/.config/mise"
-    cmd: mise install
+  loop: "{{ mise_shell_aliases | default({}) | dict2items }}"
+
+- name: Fmt
+  ansible.builtin.command:
+    cmd: mise fmt --all
+    chdir: "{{ ansible_facts['env']['HOME'] }}/.config/mise"

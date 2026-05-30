@@ -1,0 +1,26 @@
+---
+- name: Register blender
+  ansible.builtin.command:
+    cmd: blender --register
+
+- name: Prepare blender config directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.blender"
+    state: directory
+    mode: "0755"
+
+- name: Download blender-mcp addon
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/ahujasid/blender-mcp/{{ blender_mcp_commit_sha }}/addon.py
+    dest: "{{ ansible_facts['env']['HOME'] }}/.blender/mcp.py"
+    mode: "0644"
+
+- name: Install blender-mcp addon
+  ansible.builtin.command:
+    cmd: |
+      blender --background --python-expr '''
+      import bpy
+      bpy.ops.preferences.addon_install(filepath="{{ ansible_facts['env']['HOME'] }}/.blender/mcp.py")
+      bpy.ops.preferences.addon_enable(module="mcp")
+      bpy.ops.wm.save_userpref()
+      '''

@@ -2,19 +2,19 @@
 - name: Stat
   ansible.builtin.stat:
     path: "{{ ansible_facts['env']['HOME'] }}/pokemon/reborn/Game.AppImage"
-  register: stat
+  register: _stat
 
 - name: Install
-  when: not stat.stat.exists
+  when: not _stat.stat.exists
   block:
     - name: Tmp download dir
       ansible.builtin.tempfile:
         state: directory
-      register: download
+      register: _download
 
     - name: Download
       ansible.builtin.shell:
-        cmd: curl -fsSLo "{{ download.path }}/reborn-linux.zip" https://pkmnfan.games/reborn-linux
+        cmd: curl -fsSLo "{{ _download.path }}/reborn-linux.zip" https://pkmnfan.games/reborn-linux
 
     - name: Install dir
       ansible.builtin.file:
@@ -25,6 +25,6 @@
       ansible.builtin.shell:
         chdir: "{{ ansible_facts['env']['HOME'] }}/pokemon/reborn"
         cmd: |
-          unzip "{{ download.path }}/reborn-linux.zip"
+          unzip "{{ _download.path }}/reborn-linux.zip"
           chmod +x "{{ ansible_facts['env']['HOME'] }}/pokemon/reborn/Game.AppImage"
         creates: "{{ ansible_facts['env']['HOME'] }}/pokemon/reborn/Game.AppImage"

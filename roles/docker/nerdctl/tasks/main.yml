@@ -1,0 +1,8 @@
+---
+- name: Install
+  when: nerdctl_state == 'present'
+  ansible.builtin.include_tasks: install-rootless.yml
+
+- name: Uninstall
+  when: nerdctl_state == 'absent'
+  ansible.builtin.include_tasks: uninstall-rootless.yml

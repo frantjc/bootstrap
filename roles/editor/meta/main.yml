@@ -1,3 +1,7 @@
 ---
 dependencies:
   - role: editor/vscode
+    when: editor == 'vscode'
+
+  - role: editor/zed
+    when: editor == 'zed'

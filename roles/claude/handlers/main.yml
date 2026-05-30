@@ -1,0 +1,39 @@
+---
+- name: Start Copilot
+  listen: systemd service copilot-api restart
+  ansible.builtin.systemd_service:
+    name: copilot-api
+    state: restarted
+    enabled: true
+    scope: user
+    daemon_reload: true
+
+- name: Wait for Copilot API to become healthy
+  listen: systemd service copilot-api restart
+  ansible.builtin.uri:
+    method: GET
+    url: http://localhost:4141
+  register: _copilot_api_health
+  retries: 9
+  delay: 1
+  until: _copilot_api_health.status == 200
+
+- name: Fetch Copilot API models
+  listen: systemd service copilot-api restart
+  ansible.builtin.uri:
+    url: http://localhost:4141/models
+    method: GET
+    status_code: 200
+    return_content: true
+  register: _copilot_api_models_resp
+  changed_when: false
+
+- name: Stop if expected models are not supported
+  listen: systemd service copilot-api restart
+  vars:
+    _copilot_api_models: "{{ _copilot_api_models_resp.content | from_json }}"
+    _copilot_api_model_ids: "{{ _copilot_api_models.data | map(attribute='id') | list }}"
+  ansible.builtin.assert:
+    that:
+      - claude_anthropic_model in _copilot_api_model_ids
+      - claude_anthropic_default_haiku_model in _copilot_api_model_ids
