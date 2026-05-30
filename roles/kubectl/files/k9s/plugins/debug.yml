@@ -1,0 +1,49 @@
+plugins:
+  netshoot-namespace:
+    shortCut: Shift-D
+    description: netshoot
+    scopes:
+      - namespaces
+    background: false
+    command: sh
+    args:
+      - -c
+      - >-
+        kubectl run netshoot-$(od -An -N2 -tu2 /dev/urandom | tr -d ' ')
+        --image=nicolaka/netshoot
+        -it
+        --rm
+        --namespace=$NAME
+
+  netshoot-pod:
+    shortCut: Shift-D
+    description: netshoot
+    scopes:
+      - pods
+    background: false
+    command: kubectl
+    args:
+      - debug
+      - --namespace=$NAMESPACE
+      - $NAME
+      - -it
+      - --image=nicolaka/netshoot
+      - --profile=netadmin
+
+  nsenter:
+    shortCut: Shift-D
+    description: nsenter
+    scopes:
+      - nodes
+    background: false
+    command: sh
+    args:
+      - -c
+      - >-
+        kubectl run nsenter-node-$NAME-$(od -An -N2 -tu2 /dev/urandom | tr -d ' ')
+        --image=nicolaka/netshoot
+        -it
+        --rm
+        --privileged
+        --overrides='{"spec":{"hostPID":true,"hostNetwork":true,"nodeName":"$NAME"}}'
+        -- nsenter --target 1 --mount --uts --ipc --net --pid -- bash

@@ -1,0 +1,90 @@
+plugins:
+  disable-reconcile:
+    shortCut: Shift-Q
+    description: Disable reconcile
+    scopes:
+      - all
+    background: true
+    command: kubectl
+    args:
+      - annotate
+      - --overwrite
+      - --namespace=$NAMESPACE
+      - $RESOURCE_NAME
+      - $NAME
+      - kustomize.toolkit.fluxcd.io/reconcile=disabled
+
+  enable-reconcile:
+    shortCut: Shift-E
+    description: Enable reconcile
+    scopes:
+      - all
+    background: true
+    command: kubectl
+    args:
+      - annotate
+      - --overwrite
+      - --namespace=$NAMESPACE
+      - $RESOURCE_NAME
+      - $NAME
+      - kustomize.toolkit.fluxcd.io/reconcile-
+
+  reconcile:
+    shortCut: Shift-R
+    description: Reconcile
+    scopes:
+      - helmreleases
+      - kustomizations
+      - gitrepositories
+      - helmrepositories
+      - ocirepositories
+      - buckets
+    background: true
+    command: kubectl
+    args:
+      - annotate
+      - --overwrite
+      - --namespace=$NAMESPACE
+      - $RESOURCE_NAME
+      - $NAME
+      - reconcile.fluxcd.io/requestedAt
+
+  suspend:
+    shortCut: Shift-S
+    description: Suspend
+    scopes:
+      - helmreleases
+      - kustomizations
+      - gitrepositories
+      - helmrepositories
+      - ocirepositories
+      - buckets
+    background: true
+    command: kubectl
+    args:
+      - patch
+      - --namespace=$NAMESPACE
+      - $RESOURCE_NAME
+      - $NAME
+      - --type=merge
+      - -p={"spec":{"suspend":true}}
+
+  resume:
+    shortCut: Shift-U
+    description: Resume
+    scopes:
+      - helmreleases
+      - kustomizations
+      - gitrepositories
+      - helmrepositories
+      - ocirepositories
+      - buckets
+    background: true
+    command: kubectl
+    args:
+      - patch
+      - --namespace=$NAMESPACE
+      - $RESOURCE_NAME
+      - $NAME
+      - --type=merge
+      - -p={"spec":{"suspend":false}}
