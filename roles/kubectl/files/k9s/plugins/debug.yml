@@ -30,8 +30,22 @@ plugins:
       - --image=nicolaka/netshoot
       - --profile=netadmin
 
-  nsenter:
+  netshoot-node:
     shortCut: Shift-D
+    description: netshoot
+    scopes:
+      - nodes
+    background: false
+    command: kubectl
+    args:
+      - debug
+      - node/$NAME
+      - --image=nicolaka/netshoot
+      - -it
+      - --profile=sysadmin
+
+  nsenter:
+    shortCut: Shift-W
     description: nsenter
     scopes:
       - nodes
@@ -40,7 +54,7 @@ plugins:
     args:
       - -c
       - >-
-        kubectl run nsenter-node-$NAME-$(od -An -N2 -tu2 /dev/urandom | tr -d ' ')
+        kubectl run node-nsenter-$NAME-$(od -An -N2 -tu2 /dev/urandom | tr -d ' ')
         --image=nicolaka/netshoot
         -it
         --rm
