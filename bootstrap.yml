@@ -2,7 +2,7 @@
 - name: Bootstrap system
   hosts: all
   roles:
-    - role: blender
+    # - role: blender
     - role: claude
     - role: dagger
     # - role: discord
