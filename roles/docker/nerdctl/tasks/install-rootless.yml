@@ -7,10 +7,10 @@
 - name: RootlessKit AppArmor
   become: true
   vars:
-    _rootlesskit: "{{ ansible_facts['env']['HOME'] }}/.local/bin/rootlesskit"
+    rootlesskit: "{{ ansible_facts['env']['HOME'] }}/.local/bin/rootlesskit"
   ansible.builtin.template:
     src: rootlesskit-apparmor
-    dest: "/etc/apparmor.d/{{ _rootlesskit | regex_replace('^/', '') | replace('/', '.') }}"
+    dest: "/etc/apparmor.d/{{ rootlesskit | regex_replace('^/', '') | replace('/', '.') }}"
     mode: "0644"
   notify: systemd apparmor restart
 

@@ -17,9 +17,9 @@
 - name: Remove RootlessKit AppArmor
   become: true
   vars:
-    _rootlesskit: "{{ ansible_facts['env']['HOME'] }}/.local/bin/rootlesskit"
+    rootlesskit: "{{ ansible_facts['env']['HOME'] }}/.local/bin/rootlesskit"
   ansible.builtin.file:
-    path: "/etc/apparmor.d/{{ _rootlesskit | regex_replace('^/', '') | replace('/', '.') }}"
+    path: "/etc/apparmor.d/{{ rootlesskit | regex_replace('^/', '') | replace('/', '.') }}"
     state: absent
   notify: systemd apparmor restart
 
