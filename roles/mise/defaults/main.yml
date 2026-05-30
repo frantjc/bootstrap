@@ -1,7 +1,7 @@
 ---
 mise_tools:
   - godot@4.6.1-stable
-  - go@1.26.1
+  - go@1.26.3
   - python@3.14.3
   - uv@0.10.9
   - ansible-core@2.20.3
