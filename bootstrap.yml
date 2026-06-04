@@ -6,13 +6,13 @@
     - role: claude
     - role: dagger
     # - role: discord
-    - role: editor
+    # - role: editor
     # TODO(frantjc):
     # - role: gamemoded
     # - role: jellyfin
-    - role: kubectl
-    - role: kind
-    - role: mise
+    # - role: kubectl
+    # - role: kind
+    # - role: mise
     # - role: pokemon
     # - role: rvgl
     # - role: spotify

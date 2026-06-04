@@ -3,7 +3,5 @@ dependencies:
   - role: mise
     vars:
       mise_tools:
-        - claude@2.1.79
-        - node@25.8.1
-        - npm:copilot-api@0.7.0
+        - opencode
         - rtk@0.42.1
