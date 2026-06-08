@@ -10,10 +10,11 @@ plugins:
       - -c
       - >-
         kubectl run netshoot-$(od -An -N2 -tu2 /dev/urandom | tr -d ' ')
+        --context=$CONTEXT
+        --namespace=$NAME
         --image=nicolaka/netshoot
         -it
         --rm
-        --namespace=$NAME
 
   netshoot-pod:
     shortCut: Shift-D
@@ -24,6 +25,7 @@ plugins:
     command: kubectl
     args:
       - debug
+      - --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $NAME
       - -it
@@ -39,6 +41,7 @@ plugins:
     command: kubectl
     args:
       - debug
+      - --context=$CONTEXT
       - node/$NAME
       - --image=nicolaka/netshoot
       - -it
@@ -55,6 +58,7 @@ plugins:
       - -c
       - >-
         kubectl run node-nsenter-$NAME-$(od -An -N2 -tu2 /dev/urandom | tr -d ' ')
+        --context=$CONTEXT
         --image=nicolaka/netshoot
         -it
         --rm

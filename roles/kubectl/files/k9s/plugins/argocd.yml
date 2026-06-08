@@ -9,6 +9,7 @@ plugins:
     args:
       - annotate
       - application
+        --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $NAME
       - argocd.argoproj.io/refresh=normal
@@ -23,6 +24,7 @@ plugins:
     args:
       - annotate
       - application
+        --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $NAME
       - argocd.argoproj.io/refresh=normal
@@ -37,6 +39,7 @@ plugins:
     args:
       - patch
       - applications
+        --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $NAME
       - --type=json
@@ -52,6 +55,7 @@ plugins:
     args:
       - patch
       - applications
+        --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $NAME
       - --type=merge

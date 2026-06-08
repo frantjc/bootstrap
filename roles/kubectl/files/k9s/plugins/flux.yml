@@ -9,6 +9,7 @@ plugins:
     args:
       - annotate
       - --overwrite
+      - --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $RESOURCE_NAME
       - $NAME
@@ -24,6 +25,7 @@ plugins:
     args:
       - annotate
       - --overwrite
+      - --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $RESOURCE_NAME
       - $NAME
@@ -44,6 +46,7 @@ plugins:
     args:
       - annotate
       - --overwrite
+      - --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $RESOURCE_NAME
       - $NAME
@@ -63,6 +66,7 @@ plugins:
     command: kubectl
     args:
       - patch
+      - --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $RESOURCE_NAME
       - $NAME
@@ -83,6 +87,7 @@ plugins:
     command: kubectl
     args:
       - patch
+      - --context=$CONTEXT
       - --namespace=$NAMESPACE
       - $RESOURCE_NAME
       - $NAME
