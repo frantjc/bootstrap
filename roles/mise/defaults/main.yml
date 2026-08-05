@@ -1,4 +1,5 @@
 ---
+mise_tool_aliases: {}
 mise_tools:
   - godot@4.6.1-stable
   - go@1.26.3

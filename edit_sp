@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+import struct, zlib, sys, shutil
+
+SP_OFFSET = 0x25e148
+DEFAULT_SP = 999999
+
+def main():
+    if len(sys.argv) < 2:
+        print(f"Usage: {sys.argv[0]} <file.CMG> [amount]")
+        sys.exit(1)
+
+    path = sys.argv[1]
+    amount = int(sys.argv[2]) if len(sys.argv) >= 3 else DEFAULT_SP
+
+    shutil.copy2(path, path + ".bak")
+
+    data = bytearray(open(path, "rb").read())
+
+    old_sp = struct.unpack("<I", data[SP_OFFSET:SP_OFFSET+4])[0]
+    data[SP_OFFSET:SP_OFFSET+4] = struct.pack("<I", amount)
+
+    crc = zlib.crc32(bytes(data[4:])) & 0xFFFFFFFF
+    data[0:4] = struct.pack("<I", crc)
+
+    open(path, "wb").write(data)
+    print(f"SP: {old_sp} -> {amount} | CRC: 0x{crc:08x} | backup: {path}.bak")
+
+if __name__ == "__main__":
+    main()

@@ -13,6 +13,12 @@
     block: |
       eval "$(mise activate zsh)"
 
+- name: Set tool aliases
+  ansible.builtin.command:
+    chdir: "{{ ansible_facts['env']['HOME'] }}/.config/mise"
+    cmd: mise tool-alias set {{ item.key }} {{ item.value }}
+  loop: "{{ mise_tool_aliases | default({}) | dict2items }}"
+
 - name: Install tools
   ansible.builtin.command:
     cmd: mise use --global {{ item }}
