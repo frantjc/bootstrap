@@ -3,8 +3,8 @@
   hosts: all
   roles:
     # - role: blender
-    - role: claude
-    - role: dagger
+    # - role: claude
+    # - role: dagger
     # - role: discord
     # - role: editor
     # TODO(frantjc):
@@ -13,7 +13,8 @@
     # - role: kubectl
     # - role: kind
     # - role: mise
-    # - role: pokemon
+    - role: pokemon/rejuv
+    - role: pbpaste
     # - role: rvgl
     # - role: spotify
     # - role: steam

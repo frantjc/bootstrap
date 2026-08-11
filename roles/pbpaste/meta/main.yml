@@ -1,0 +1,8 @@
+---
+dependencies:
+  - role: mise
+    vars:
+      mise_tools: []
+      mise_shell_aliases:
+        pbcopy: xclip -selection clipboard
+        pbpaste: xclip -selection clipboard -o

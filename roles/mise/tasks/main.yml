@@ -36,7 +36,7 @@
 
 - name: Set shell aliases
   ansible.builtin.command:
-    cmd: mise shell-alias set {{ item.key }}={{ item.value }}
+    cmd: mise shell-alias set {{ item.key }}="{{ item.value }}"
     chdir: "{{ ansible_facts['env']['HOME'] }}/.config/mise"
   loop: "{{ mise_shell_aliases | default({}) | dict2items }}"
 

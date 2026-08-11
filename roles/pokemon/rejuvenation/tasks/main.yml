@@ -1,38 +1,36 @@
 ---
 - name: Stat
   ansible.builtin.stat:
-    path: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation/Game.AppImage"
+    path: "{{ pokemon_rejuvenation_directory }}/{{ pokemon_rejuvenation_app_image_base_name }}"
   register: _stat
 
 - name: Install
-  when: not _stat.stat.exists
+  # when: not _stat.stat.exists
   block:
     - name: Install megacmd
       become: true
       ansible.builtin.apt:
         deb: https://mega.nz/linux/repo/xUbuntu_24.04/amd64/megacmd-xUbuntu_24.04_amd64.deb
 
-    - name: Tmp download dir
-      ansible.builtin.tempfile:
-        state: directory
-      register: _download
+    # - name: Tmp download dir
+    #   ansible.builtin.tempfile:
+    #     state: directory
+    #   register: _download
 
-    - name: Download
-      ansible.builtin.shell:
-        cmd: "mega-get https://mega.nz/file/cUoHATBI#dZKajQ9K7DTA2D6jyinoyuzIjk-n9KJO2Ziwj73UASk {{ _download.path }}"
+    # - name: Download
+    #   ansible.builtin.shell:
+    #     cmd: "mega-get {{ pokemon_rejuvenation_mega_url }} {{ _download.path }}"
 
-    - name: Install dir
-      ansible.builtin.file:
-        path: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation"
-        state: directory
+    # - name: Install dir
+    #   ansible.builtin.file:
+    #     path: "{{ pokemon_rejuvenation_directory }}"
+    #     state: directory
 
-    - name: Unzip
-      ansible.builtin.shell:
-        chdir: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation"
-        cmd: |
-          unzip "{{ _download.path }}/Rejuvenation-13.5.0-linux.zip"
-          chmod +x "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation/Game.AppImage"
-        creates: "{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation/Game.AppImage"
+    # - name: Unzip
+    #   ansible.builtin.command:
+    #     chdir: "{{ pokemon_rejuvenation_directory }}"
+    #     cmd: unzip "{{ _download.path }}/Rejuvenation-14.0-linux.zip"
+    #     creates: "{{ pokemon_rejuvenation_directory }}/{{ pokemon_rejuvenation_app_image_base_name }}"
 
     - name: Tmp checkout dir
       ansible.builtin.tempfile:
@@ -47,4 +45,4 @@
     - name: Apply debug patches
       ansible.builtin.shell:
         chdir: "{{ _checkout.path }}/rejuvenation"
-        cmd: make pokemon-debug-menu debug-menu POKEMON_REJUVENATION="{{ ansible_facts['env']['HOME'] }}/pokemon/rejuvenation"
+        cmd: make mini-debug crests POKEMON_REJUVENATION="{{ pokemon_rejuvenation_directory }}"

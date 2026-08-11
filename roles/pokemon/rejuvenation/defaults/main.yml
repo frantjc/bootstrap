@@ -1,0 +1,4 @@
+---
+pokemon_rejuvenation_directory: "{{ ansible_facts['env']['HOME'] }}/Documents/My Games/Pokemon/Rejuvenation"
+pokemon_rejuvenation_mega_url: https://mega.nz/file/RAoj0ZjZ#5XJMHmoAp9DiJl67txXp5qpEVhHCS3eFP9c9c7bM2xU
+pokemon_rejuvenation_app_image_base_name: Rejuvenation.AppImage
