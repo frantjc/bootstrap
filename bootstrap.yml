@@ -14,7 +14,7 @@
     # - role: kind
     # - role: mise
     - role: pokemon/rejuv
-    - role: pbpaste
+    # - role: pbpaste
     # - role: rvgl
     # - role: spotify
     # - role: steam

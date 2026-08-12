@@ -5,44 +5,44 @@
   register: _stat
 
 - name: Install
-  # when: not _stat.stat.exists
+  when: not _stat.stat.exists
   block:
     - name: Install megacmd
       become: true
       ansible.builtin.apt:
         deb: https://mega.nz/linux/repo/xUbuntu_24.04/amd64/megacmd-xUbuntu_24.04_amd64.deb
 
-    # - name: Tmp download dir
-    #   ansible.builtin.tempfile:
-    #     state: directory
-    #   register: _download
-
-    # - name: Download
-    #   ansible.builtin.shell:
-    #     cmd: "mega-get {{ pokemon_rejuvenation_mega_url }} {{ _download.path }}"
-
-    # - name: Install dir
-    #   ansible.builtin.file:
-    #     path: "{{ pokemon_rejuvenation_directory }}"
-    #     state: directory
-
-    # - name: Unzip
-    #   ansible.builtin.command:
-    #     chdir: "{{ pokemon_rejuvenation_directory }}"
-    #     cmd: unzip "{{ _download.path }}/Rejuvenation-14.0-linux.zip"
-    #     creates: "{{ pokemon_rejuvenation_directory }}/{{ pokemon_rejuvenation_app_image_base_name }}"
-
-    - name: Tmp checkout dir
+    - name: Tmp download dir
       ansible.builtin.tempfile:
         state: directory
-      register: _checkout
+      register: _download
 
-    - name: Clone
-      ansible.builtin.git:
-        repo: https://github.com/frantjc/pokemon-debug.git
-        dest: "{{ _checkout.path }}"
-
-    - name: Apply debug patches
+    - name: Download
       ansible.builtin.shell:
-        chdir: "{{ _checkout.path }}/rejuvenation"
-        cmd: make mini-debug crests POKEMON_REJUVENATION="{{ pokemon_rejuvenation_directory }}"
+        cmd: "mega-get {{ pokemon_rejuvenation_mega_url }} {{ _download.path }}"
+
+    - name: Install dir
+      ansible.builtin.file:
+        path: "{{ pokemon_rejuvenation_directory }}"
+        state: directory
+
+    - name: Unzip
+      ansible.builtin.command:
+        chdir: "{{ pokemon_rejuvenation_directory }}"
+        cmd: unzip "{{ _download.path }}/Rejuvenation-14.0-linux.zip"
+        creates: "{{ pokemon_rejuvenation_directory }}/{{ pokemon_rejuvenation_app_image_base_name }}"
+
+    # - name: Tmp checkout dir
+    #   ansible.builtin.tempfile:
+    #     state: directory
+    #   register: _checkout
+
+    # - name: Clone
+    #   ansible.builtin.git:
+    #     repo: https://github.com/frantjc/pokemon-debug.git
+    #     dest: "{{ _checkout.path }}"
+
+    # - name: Apply debug patches
+    #   ansible.builtin.shell:
+    #     chdir: "{{ _checkout.path }}/rejuvenation"
+    #     cmd: make mini-debug crests POKEMON_REJUVENATION="{{ pokemon_rejuvenation_directory }}"
