@@ -26,13 +26,15 @@
       mkdir -p "$kubeconfigd"
 
       kubecfg () {
-        prev_kubeconfig="${KUBECONFIG:-"$default_kubeconfig"}"
+        local prev_kubeconfig="${KUBECONFIG:-"$default_kubeconfig"}" selected
         if [[ "$1" == "-" ]]; then
           export KUBECONFIG="$(cat "$prev_kubeconfig_state")"
           echo "$KUBECONFIG" > "$cur_kubeconfig_state"
           echo "$prev_kubeconfig" > "$prev_kubeconfig_state"
         elif [[ $(find "$kubeconfigd" -type f | wc -l) -gt 0 ]]; then
-          export KUBECONFIG="$(find "$kubeconfigd" -type f | fzf)"
+          selected="$(find "$kubeconfigd" -type f | fzf)" || return 0
+          [[ -n "$selected" ]] || return 0
+          export KUBECONFIG="$selected"
           echo "$KUBECONFIG" > "$cur_kubeconfig_state"
           echo "$prev_kubeconfig" > "$prev_kubeconfig_state"
         else
@@ -40,8 +42,15 @@
         fi
       }
 
-- name: Install k9s plugins
+- name: Uninstall k9s plugins
+  vars:
   ansible.builtin.copy:
     src: k9s/plugins/
     dest: "{{ (bootstrap_env | default(ansible_facts['env']))['XDG_CONFIG_HOME'] | default(ansible_facts['env']['HOME'] + '/.config') }}/k9s/plugins"
     mode: "0644"
+    state: absent
+
+- name: Install sofka plugins
+  vars:
+  ansible.builtin.command:
+    cmd: sofka plugin install trivy

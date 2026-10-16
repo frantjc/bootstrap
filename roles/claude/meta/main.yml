@@ -3,9 +3,9 @@ dependencies:
   - role: mise
     vars:
       mise_tool_aliases:
-        copilot-api: npm:copilot-api
+        copilot-api: npm:@jeffreycao/copilot-api
       mise_tools:
-        - claude@2.1.79
+        - claude@2.1.284
         - node@25.8.1
-        - copilot-api@0.7.0
-        - rtk@0.42.1
+        - copilot-api@2.6.23
+        - rtk@0.50.0
